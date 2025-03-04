@@ -9,7 +9,6 @@ const date = new Date();
 
 const urlInscriptions = "inscriptions/"
 const urlUpdateNewInscriptionsNewRequests = "inscriptions/updatenewrequests"
-const urlUpdateNewMerchRequests = "merchrequests/updatenewrequests"
 
 export default function SystemInscriptions() {
     const [inscriptionsReq, setinscriptionsReq] = useState([]);
@@ -32,17 +31,6 @@ export default function SystemInscriptions() {
         function axiosData() {
             axios.get(urlUpdateNewInscriptionsNewRequests, { withCredentials: true })
                 .catch(error => {
-                    console.log(error)
-                })
-        }
-        axiosData();
-    }, [])
-
-    useEffect(() => {
-        function axiosData() {
-            axios.get(urlUpdateNewMerchRequests, { withCredentials: true })
-                .catch(error => {
-                    toast.error('Ocurrió un error inesperado. Intenta de nuevo');
                     console.log(error)
                 })
         }

@@ -8,6 +8,7 @@ const date = new Date();
 
 const urlMerchRequests = "merchrequests/"
 const urlMarkPaidMerchRequests = "merchrequests/updatepaymentstatus/"
+const urlUpdateNewMerchRequests = "merchrequests/updatenewrequests"
 
 export default function SystemMerch() {
     const navigate = useNavigate();
@@ -26,6 +27,19 @@ export default function SystemMerch() {
         }
         axiosData();
     }, [merchRequests])
+
+    
+    useEffect(() => {
+        function axiosData() {
+            axios.get(urlUpdateNewMerchRequests, { withCredentials: true })
+                .catch(error => {
+                    toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+                    console.log(error)
+                })
+        }
+        axiosData();
+    }, [])
+
 
     function deleteMerchRequest(mid) {
         axios.delete(urlMerchRequests + mid, { withCredentials: true })

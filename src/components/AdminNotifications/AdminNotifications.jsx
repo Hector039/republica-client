@@ -26,13 +26,8 @@ export default function AdminNotifications() {
                     toast.error('Ocurrió un error inesperado. Intenta de nuevo');
                     console.log(error)
                 })
-        }
-        axiosData();
-    }, [inscrptionsNewReq])
 
-    useEffect(() => {
-        function axiosData() {
-            axios.get(urlMerchNewRequests, { withCredentials: true })
+                axios.get(urlMerchNewRequests, { withCredentials: true })
                 .then(response => {
                     setmerchNewReq(response.data);
                 })
@@ -42,8 +37,7 @@ export default function AdminNotifications() {
                 })
         }
         axiosData();
-    }, [merchNewReq])
-
+    }, [])
 
     function deleteInscription(iid) {
         axios.delete(urlInscriptions + iid, { withCredentials: true })

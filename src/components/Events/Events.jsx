@@ -32,14 +32,9 @@ export default function Events() {
                     console.log(error);
                     toast.error('Ocurrió un error inesperado. Intenta de nuevo');
                 })
-        }
-        axiosData();
-    }, [])
 
-    useEffect(() => {
-        function axiosData() {
             if (user) {
-                axios.get(urlMerchRequests, { withCredentials: true })
+                axios.get(urlMerchRequests + user.id_user, { withCredentials: true })
                     .then(response => {
                         setMerchRequests(response.data);
                     })
@@ -47,15 +42,7 @@ export default function Events() {
                         console.log(error);
                         toast.error('Ocurrió un error inesperado. Intenta de nuevo');
                     })
-            }
 
-        }
-        axiosData();
-    }, [merchRequests])
-
-    useEffect(() => {
-        function axiosData() {
-            if (user) {
                 axios.get(urlInscriptions + user.id_user, { withCredentials: true })
                     .then(response => {
                         setUserInscriptions(response.data);
@@ -67,7 +54,7 @@ export default function Events() {
             }
         }
         axiosData();
-    }, [userInscriptions])
+    }, [])
 
     const {
         register,
