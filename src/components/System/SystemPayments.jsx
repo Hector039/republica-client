@@ -13,9 +13,11 @@ const urlTotalDayPayments = "utils/daytotalpayments/"
 
 export default function SystemPayments() {
 
+    const payDate = date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate()).padStart(2, "0");
+
     const [users, setUsers] = useState([])
-    const [dateChanger, setDateChanger] = useState(date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate()).padStart(2, "0"))
-    const [dateChanger2, setDateChanger2] = useState(date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0"))
+    const [dateChanger, setDateChanger] = useState(payDate)
+    //const [dateChanger2, setDateChanger2] = useState(date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0"))
     const [userDates, setUserDates] = useState({});
     const [totalDay, setTotalDay] = useState([])
     const [queryDay, setQueryDay] = useState([])
@@ -52,7 +54,7 @@ export default function SystemPayments() {
         const dateArray = e.split("-")
 
         if (buttonType === "month") {
-            axios.post(urlAddMonthPayment, { uid: uid, month: dateArray[1], year: dateArray[0] }, { withCredentials: true })
+            axios.post(urlAddMonthPayment, { uid: uid, month: dateArray[1], year: dateArray[0], payDate: payDate }, { withCredentials: true })
                 .then(response => {
                     toast.success('Se registró el pago mensual del usuario.');
                 })
@@ -61,7 +63,7 @@ export default function SystemPayments() {
                     toast.error('Ocurrió un error inesperado. Intenta de nuevo');
                 })
         } else if (buttonType === "year") {
-            axios.post(urlAddAnnualPayment, { uid: uid, year: dateArray[0] }, { withCredentials: true })
+            axios.post(urlAddAnnualPayment, { uid: uid, year: dateArray[0], payDate: payDate }, { withCredentials: true })
                 .then(response => {
                     toast.success('Se registró el pago anual del usuario.');
                 })
@@ -76,7 +78,7 @@ export default function SystemPayments() {
     const handleSubmit2 = (e, uid) => {
         e.preventDefault();
         const buttonType = e.nativeEvent.submitter.name;
-        const selectedDate = userDates[uid] || dateChanger2;
+        const selectedDate = userDates[uid] || dateChanger;
         addPayment(selectedDate, uid, buttonType);
     };
 
@@ -192,7 +194,7 @@ export default function SystemPayments() {
                                             type="month"
                                             id="month_paid"
                                             name="month_paid"
-                                            value={userDates[user.id_user] || dateChanger2}
+                                            value={userDates[user.id_user] || dateChanger}
                                             onChange={(e) => handleChange2(e, user.id_user)}
                                             required
                                         />

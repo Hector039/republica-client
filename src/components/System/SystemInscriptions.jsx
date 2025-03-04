@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useEffect } from "react";
 import axios from "../../config/axiosConfig";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { toast } from 'react-toastify';
 import "./assets/systeminscriptions.css"
 
@@ -10,7 +10,6 @@ const date = new Date();
 const urlInscriptions = "inscriptions/"
 
 export default function SystemInscriptions() {
-    const navigate = useNavigate();
     const [inscriptionsReq, setinscriptionsReq] = useState([]);
 
     useEffect(() => {

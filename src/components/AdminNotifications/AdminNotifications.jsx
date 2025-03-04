@@ -6,8 +6,10 @@ import { toast } from 'react-toastify';
 const date = new Date();
 
 const urlInscriptionsNewRequests = "inscriptions/newrequests"
+const urlUpdateNewInscriptionsNewRequests = "inscriptions/updatenewrequests"
 const urlInscriptions = "inscriptions/"
 const urlMerchNewRequests = "merchrequests/newrequests"
+const urlUpdateNewMerchRequests = "merchrequests/updatenewrequests"
 const urlMerchRequests = "merchrequests/"
 const urlMarkPaidMerchRequests = "merchrequests/updatepaymentstatus/"
 
@@ -21,6 +23,12 @@ export default function AdminNotifications() {
             axios.get(urlInscriptionsNewRequests, { withCredentials: true })
                 .then(response => {
                     setinscrptionsNewReq(response.data);
+
+                    axios.get(urlUpdateNewInscriptionsNewRequests, { withCredentials: true })
+                        .catch(error => {
+                            toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+                            console.log(error)
+                        })
                 })
                 .catch(error => {
                     toast.error('Ocurrió un error inesperado. Intenta de nuevo');
@@ -35,6 +43,12 @@ export default function AdminNotifications() {
             axios.get(urlMerchNewRequests, { withCredentials: true })
                 .then(response => {
                     setmerchNewReq(response.data);
+
+                    axios.get(urlUpdateNewMerchRequests, { withCredentials: true })
+                        .catch(error => {
+                            toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+                            console.log(error)
+                        })
                 })
                 .catch(error => {
                     toast.error('Ocurrió un error inesperado. Intenta de nuevo');
@@ -44,7 +58,7 @@ export default function AdminNotifications() {
         axiosData();
     }, [merchNewReq])
 
-    
+
     function deleteInscription(iid) {
         axios.delete(urlInscriptions + iid, { withCredentials: true })
             .then(response => {
@@ -59,7 +73,7 @@ export default function AdminNotifications() {
 
     function markPaidInscription(iid) {
         const payDate = date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate())
-        axios.put(urlInscriptions, { iid: iid, payDate: payDate}, { withCredentials: true })
+        axios.put(urlInscriptions, { iid: iid, payDate: payDate }, { withCredentials: true })
             .then(response => {
                 toast.success('Se registró la inscripción correctamente.');
                 navigate("/adminnotifications");
@@ -81,10 +95,10 @@ export default function AdminNotifications() {
                 console.log(error)
             })
     }
-    
+
     function markPaidMerchRequest(mid) {
         const payDate = date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate())
-        axios.put(urlMarkPaidMerchRequests, { mid: mid, payDate: payDate}, { withCredentials: true })
+        axios.put(urlMarkPaidMerchRequests, { mid: mid, payDate: payDate }, { withCredentials: true })
             .then(response => {
                 toast.success('Se registró la solicitud correctamente.');
                 navigate("/adminnotifications");
@@ -99,9 +113,9 @@ export default function AdminNotifications() {
         <div className="carrito">
             <h1>Ultimas solicitudes recibidas</h1>
 
-            {inscrptionsNewReq.length &&
-<>
-                <h2>Solicitudes de inscripción nuevas:</h2>
+            {inscrptionsNewReq.length != 0 &&
+                <>
+                    <h2>Solicitudes de inscripción nuevas:</h2>
                     <table>
                         <thead>
                             <tr>
@@ -134,18 +148,18 @@ export default function AdminNotifications() {
                                         <th>{inscription.inscription_date.slice(0, -14)}</th>
                                         <th>{inscription.pay_date ? "SI" : "NO"}</th>
                                         <th>{!inscription.pay_date && <button className="edit-event-button" onClick={() => { markPaidInscription(inscription.id_inscription) }}>Registrar pago</button>}
-                                        <button className="delete-event-button" onClick={() => { deleteInscription(inscription.id_inscription) }}>Borrar</button></th>
+                                            <button className="delete-event-button" onClick={() => { deleteInscription(inscription.id_inscription) }}>Borrar</button></th>
                                     </tr>
                                 ))
                             }
 
                         </tbody>
                     </table>
-                    </>
+                </>
             }
-            {merchNewReq.length &&
-<>
-                <h2>Solicitudes de encargues nuevas:</h2>
+            {merchNewReq.length != 0 &&
+                <>
+                    <h2>Solicitudes de encargues nuevas:</h2>
                     <table>
                         <thead>
                             <tr>
@@ -178,18 +192,18 @@ export default function AdminNotifications() {
                                         <th>{merchReq.req_description}</th>
                                         <th>{merchReq.pay_date ? "SI" : "NO"}</th>
                                         <th>{!merchReq.pay_date && <button className="edit-event-button" onClick={() => { markPaidMerchRequest(merchReq.id_request) }}>Registrar pago</button>}
-                                        <button className="delete-event-button" onClick={() => { deleteMerchRequest(merchReq.id_request) }}>Borrar</button></th>
+                                            <button className="delete-event-button" onClick={() => { deleteMerchRequest(merchReq.id_request) }}>Borrar</button></th>
                                     </tr>
                                 ))
                             }
 
                         </tbody>
                     </table>
-                    </>
+                </>
             }
-            
+
             <div className="ticket-back-cart-buttons">
-            <NavLink to={"/"} className="info-button" >Volver</NavLink>
+                <NavLink to={"/"} className="info-button" >Volver</NavLink>
             </div>
 
         </div>
