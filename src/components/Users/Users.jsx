@@ -81,7 +81,7 @@ export default function Users() {
                                         confirmButtonText: "Ir"
                                     }).then((result) => {
                                         if (result.isConfirmed) {
-                                            navigate("/adminnotifications");
+                                            return navigate("/adminnotifications");
                                         }
                                     });
                                 }

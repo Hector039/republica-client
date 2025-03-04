@@ -14,6 +14,7 @@ const urlTotalDayPayments = "utils/daytotalpayments/"
 export default function SystemPayments() {
 
     const payDate = date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate()).padStart(2, "0");
+    const today = date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0");
 
     const [users, setUsers] = useState([])
     const [dateChanger, setDateChanger] = useState(payDate)
@@ -78,7 +79,7 @@ export default function SystemPayments() {
     const handleSubmit2 = (e, uid) => {
         e.preventDefault();
         const buttonType = e.nativeEvent.submitter.name;
-        const selectedDate = userDates[uid] || dateChanger;
+        const selectedDate = userDates[uid] || today;
         addPayment(selectedDate, uid, buttonType);
     };
 
@@ -194,7 +195,7 @@ export default function SystemPayments() {
                                             type="month"
                                             id="month_paid"
                                             name="month_paid"
-                                            value={userDates[user.id_user] || dateChanger}
+                                            value={userDates[user.id_user] || today}
                                             onChange={(e) => handleChange2(e, user.id_user)}
                                             required
                                         />
