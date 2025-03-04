@@ -62,37 +62,42 @@ export default function Users() {
                     title: "Login correcto!",
                     showConfirmButton: false,
                     timer: 1500
-                }).then(result => {
-                    sessionStorage.setItem("temp", response.data.id_user);
-                    setUser(response.data);
-                    if (response.data.is_admin) {
-                        axios.get(urlAdminNotifications, { withCredentials: true })
-                            .then(response => {
-
-                                const merchReq = response.data.merchReq;
-                                const inscReq = response.data.inscReq;
-                                if (merchReq.merch > 0 || inscReq.insc > 0) {
-                                    MySwal.fire({
-                                        title: "Tienes nuevas notificaciones! Deseas verlas?",
-                                        icon: "warning",
-                                        showCancelButton: true,
-                                        confirmButtonColor: "#3085d6",
-                                        cancelButtonColor: "#d33",
-                                        confirmButtonText: "Ir"
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            return navigate("/adminnotifications");
-                                        }
-                                    });
-                                }
-                            })
-                            .catch(error => {
-                                toast.error('Ocurrió un error inesperado. Intenta de nuevo');
-                                console.log(error)
-                            })
-                    }
-                    navigate("/");
                 });
+
+                sessionStorage.setItem("temp", response.data.id_user);
+                setUser(response.data);
+                if (response.data.is_admin) {
+                    axios.get(urlAdminNotifications, { withCredentials: true })
+                        .then(response => {
+
+                            const merchReq = response.data.merchReq;
+                            const inscReq = response.data.inscReq;
+                            console.log(merchReq, inscReq);
+                            
+                            if (merchReq.merch > 0 || inscReq.insc > 0) {
+                                MySwal.fire({
+                                    title: "Tienes nuevas notificaciones! Deseas verlas?",
+                                    icon: "warning",
+                                    showCancelButton: true,
+                                    confirmButtonColor: "#3085d6",
+                                    cancelButtonColor: "#d33",
+                                    confirmButtonText: "Ir"
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        navigate("/adminnotifications");
+                                    }else{
+                                        navigate("/");
+                                    }
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+                            console.log(error)
+                        })
+                }
+                
+
             })
             .catch(error => {
                 if (error.response.status === 401) {
