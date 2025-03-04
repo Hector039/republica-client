@@ -6,10 +6,8 @@ import { toast } from 'react-toastify';
 const date = new Date();
 
 const urlInscriptionsNewRequests = "inscriptions/newrequests"
-const urlUpdateNewInscriptionsNewRequests = "inscriptions/updatenewrequests"
 const urlInscriptions = "inscriptions/"
 const urlMerchNewRequests = "merchrequests/newrequests"
-const urlUpdateNewMerchRequests = "merchrequests/updatenewrequests"
 const urlMerchRequests = "merchrequests/"
 const urlMarkPaidMerchRequests = "merchrequests/updatepaymentstatus/"
 
@@ -23,12 +21,6 @@ export default function AdminNotifications() {
             axios.get(urlInscriptionsNewRequests, { withCredentials: true })
                 .then(response => {
                     setinscrptionsNewReq(response.data);
-
-                    axios.get(urlUpdateNewInscriptionsNewRequests, { withCredentials: true })
-                        .catch(error => {
-                            toast.error('Ocurrió un error inesperado. Intenta de nuevo');
-                            console.log(error)
-                        })
                 })
                 .catch(error => {
                     toast.error('Ocurrió un error inesperado. Intenta de nuevo');
@@ -43,12 +35,6 @@ export default function AdminNotifications() {
             axios.get(urlMerchNewRequests, { withCredentials: true })
                 .then(response => {
                     setmerchNewReq(response.data);
-
-                    axios.get(urlUpdateNewMerchRequests, { withCredentials: true })
-                        .catch(error => {
-                            toast.error('Ocurrió un error inesperado. Intenta de nuevo');
-                            console.log(error)
-                        })
                 })
                 .catch(error => {
                     toast.error('Ocurrió un error inesperado. Intenta de nuevo');
