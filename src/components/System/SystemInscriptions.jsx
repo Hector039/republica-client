@@ -13,19 +13,20 @@ const urlUpdateNewInscriptionsNewRequests = "inscriptions/updatenewrequests"
 export default function SystemInscriptions() {
     const [inscriptionsReq, setinscriptionsReq] = useState([]);
 
+    function fetchInscriptions() {
+        axios.get(urlInscriptions, { withCredentials: true })
+            .then(response => {
+                setinscriptionsReq(response.data);
+            })
+            .catch(error => {
+                toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+                console.log(error);
+            });
+    }
+    
     useEffect(() => {
-        function axiosData() {
-            axios.get(urlInscriptions, { withCredentials: true })
-                .then(response => {
-                    setinscriptionsReq(response.data);
-                })
-                .catch(error => {
-                    toast.error('Ocurrió un error inesperado. Intenta de nuevo');
-                    console.log(error)
-                })
-        }
-        axiosData();
-    }, [inscriptionsReq])
+        fetchInscriptions();
+    }, []);
 
     useEffect(() => {
         function axiosData() {
@@ -42,6 +43,7 @@ export default function SystemInscriptions() {
         axios.delete(urlInscriptions + iid, { withCredentials: true })
             .then(response => {
                 toast.success('Se eliminó la inscripción correctamente.');
+                fetchInscriptions();
             })
             .catch(error => {
                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');
@@ -54,6 +56,7 @@ export default function SystemInscriptions() {
         axios.put(urlInscriptions, { iid: iid, payDate: payDate }, { withCredentials: true })
             .then(response => {
                 toast.success('Se registró la inscripción correctamente.');
+                fetchInscriptions();
             })
             .catch(error => {
                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');

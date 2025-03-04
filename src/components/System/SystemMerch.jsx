@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useEffect } from "react";
 import axios from "../../config/axiosConfig";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { toast } from 'react-toastify';
 
 const date = new Date();
@@ -11,22 +11,22 @@ const urlMarkPaidMerchRequests = "merchrequests/updatepaymentstatus/"
 const urlUpdateNewMerchRequests = "merchrequests/updatenewrequests"
 
 export default function SystemMerch() {
-    const navigate = useNavigate();
     const [merchRequests, setMerchReq] = useState([])
 
+    function fetchMerch() {
+        axios.get(urlMerchRequests, { withCredentials: true })
+        .then(response => {
+            setMerchReq(response.data);
+        })
+        .catch(error => {
+            toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+            console.log(error)
+        })
+    }
+    
     useEffect(() => {
-        function axiosData() {
-            axios.get(urlMerchRequests, { withCredentials: true })
-                .then(response => {
-                    setMerchReq(response.data);
-                })
-                .catch(error => {
-                    toast.error('Ocurrió un error inesperado. Intenta de nuevo');
-                    console.log(error)
-                })
-        }
-        axiosData();
-    }, [merchRequests])
+        fetchMerch();
+    }, []);
 
     
     useEffect(() => {
@@ -45,7 +45,7 @@ export default function SystemMerch() {
         axios.delete(urlMerchRequests + mid, { withCredentials: true })
             .then(response => {
                 toast.success('Se eliminó la solicitud correctamente.');
-                navigate("/administrationmerch");
+                fetchMerch();
             })
             .catch(error => {
                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');
@@ -58,7 +58,7 @@ export default function SystemMerch() {
         axios.put(urlMarkPaidMerchRequests, { mid: mid, payDate: payDate}, { withCredentials: true })
             .then(response => {
                 toast.success('Se registró la solicitud correctamente.');
-                navigate("/administrationmerch");
+                fetchMerch();
             })
             .catch(error => {
                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');

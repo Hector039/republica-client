@@ -96,7 +96,7 @@ export default function Users() {
                             console.log(error)
                         })
                 }
-                
+                navigate("/");
 
             })
             .catch(error => {

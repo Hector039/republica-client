@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useUser } from "../context/dataContext";
 import axios from "../../config/axiosConfig";
 import { useForm } from "react-hook-form";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { toast } from 'react-toastify';
 import Swal from "sweetalert2";
 import "./assets/home.css";
@@ -16,44 +16,52 @@ const urlSendMerchRequests = "merchrequests/"
 const urlDeleteMerchRequests = "merchrequests/"
 
 export default function Events() {
-    const navigate = useNavigate();
     const [events, setEvents] = useState([])
     const [userInscriptions, setUserInscriptions] = useState([])
     const [merchRequests, setMerchRequests] = useState([])
     const { user } = useUser();
 
-    useEffect(() => {
-        function axiosData() {
-            axios.get(urlEvents, { withCredentials: true })
+    function fecthMerch() {
+        if (user) {
+            axios.get(urlMerchRequests + user.id_user, { withCredentials: true })
                 .then(response => {
-                    setEvents(response.data);
+                    setMerchRequests(response.data);
                 })
                 .catch(error => {
                     console.log(error);
                     toast.error('Ocurrió un error inesperado. Intenta de nuevo');
                 })
-
-            if (user) {
-                axios.get(urlMerchRequests + user.id_user, { withCredentials: true })
-                    .then(response => {
-                        setMerchRequests(response.data);
-                    })
-                    .catch(error => {
-                        console.log(error);
-                        toast.error('Ocurrió un error inesperado. Intenta de nuevo');
-                    })
-
-                axios.get(urlInscriptions + user.id_user, { withCredentials: true })
-                    .then(response => {
-                        setUserInscriptions(response.data);
-                    })
-                    .catch(error => {
-                        console.log(error);
-                        toast.error(error);
-                    })
-            }
         }
-        axiosData();
+    }
+    function fetchInscr() {
+        if (user) {
+
+            axios.get(urlInscriptions + user.id_user, { withCredentials: true })
+                .then(response => {
+                    setUserInscriptions(response.data);
+                })
+                .catch(error => {
+                    console.log(error);
+                    toast.error(error);
+                })
+        }
+    }
+
+    function fetchEvents() {
+        axios.get(urlEvents, { withCredentials: true })
+            .then(response => {
+                setEvents(response.data);
+            })
+            .catch(error => {
+                console.log(error);
+                toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+            })
+    }
+
+    useEffect(() => {
+        fetchEvents();
+        fetchInscr();
+        fecthMerch();
     }, [])
 
     const {
@@ -75,7 +83,7 @@ export default function Events() {
                     icon: "success",
                     title: "Se envió tu solicitud correctamente.",
                     showConfirmButton: true
-                }).then(response => { navigate("/") })
+                }).then(response => { fecthMerch(); })
             })
             .catch(error => {
                 if (error.response.statusText && error.response.statusText === "Unauthorized") return toast.error(error.response.data.error);
@@ -88,7 +96,7 @@ export default function Events() {
         axios.delete(urlEvents + eid, { withCredentials: true })
             .then(response => {
                 toast.success('Se eliminó el evento correctamente.');
-                navigate("/");
+                fetchEvents();
             })
             .catch(error => {
                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');
@@ -100,7 +108,7 @@ export default function Events() {
         axios.delete(urlDeleteInscriptions + iid, { withCredentials: true })
             .then(response => {
                 toast.success('Se eliminó la inscripción correctamente.');
-                navigate("/");
+                fetchInscr();
             })
             .catch(error => {
                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');
@@ -111,7 +119,7 @@ export default function Events() {
         axios.post(urlSendInscriptions + eid + "/" + uid, { withCredentials: true })
             .then(response => {
                 toast.success('Se envió la solicitud de inscripción correctamente.');
-                navigate("/");
+                fetchInscr();
             })
             .catch(error => {
                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');
@@ -123,7 +131,7 @@ export default function Events() {
         axios.delete(urlDeleteMerchRequests + mid, { withCredentials: true })
             .then(response => {
                 toast.success('Se eliminó la solcitud de encargue correctamente.');
-                navigate("/");
+                fecthMerch();
             })
             .catch(error => {
                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');

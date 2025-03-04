@@ -46,8 +46,8 @@ export default function UpdateEvent() {
             inscription_price: e.inscription_price,
         }, { withCredentials: true })
             .then(response => {
-                navigate(`/administrationevents`);
                 toast.success('Se actualizó el evento correctamente.');
+                navigate(`/administrationevents`);
             })
             .catch(error => {
                 if (error.response.statusText && error.response.statusText === "Unauthorized") return toast.error(error.response.data.error);

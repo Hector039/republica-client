@@ -18,7 +18,6 @@ export default function SystemPayments() {
 
     const [users, setUsers] = useState([])
     const [dateChanger, setDateChanger] = useState(payDate)
-    //const [dateChanger2, setDateChanger2] = useState(date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0"))
     const [userDates, setUserDates] = useState({});
     const [totalDay, setTotalDay] = useState([])
     const [queryDay, setQueryDay] = useState([])
@@ -48,8 +47,6 @@ export default function SystemPayments() {
                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');
             })
     }
-
-
 
     function addPayment(e, uid, buttonType) {
         const dateArray = e.split("-")
@@ -103,7 +100,6 @@ export default function SystemPayments() {
             ...prevState,
             [uid]: event.target.value
         }));
-        //setDateChanger2(event.target.value);
     }
 
     return (

@@ -12,38 +12,41 @@ const urlMerchRequests = "merchrequests/"
 const urlMarkPaidMerchRequests = "merchrequests/updatepaymentstatus/"
 
 export default function AdminNotifications() {
-    const navigate = useNavigate();
     const [inscrptionsNewReq, setinscrptionsNewReq] = useState([]);
     const [merchNewReq, setmerchNewReq] = useState([]);
 
-    useEffect(() => {
-        function axiosData() {
-            axios.get(urlInscriptionsNewRequests, { withCredentials: true })
-                .then(response => {
-                    setinscrptionsNewReq(response.data);
-                })
-                .catch(error => {
-                    toast.error('Ocurrió un error inesperado. Intenta de nuevo');
-                    console.log(error)
-                })
+    function fetchNewInscr() {
+        axios.get(urlInscriptionsNewRequests, { withCredentials: true })
+            .then(response => {
+                setinscrptionsNewReq(response.data);
+            })
+            .catch(error => {
+                toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+                console.log(error)
+            })
+    }
 
-                axios.get(urlMerchNewRequests, { withCredentials: true })
-                .then(response => {
-                    setmerchNewReq(response.data);
-                })
-                .catch(error => {
-                    toast.error('Ocurrió un error inesperado. Intenta de nuevo');
-                    console.log(error)
-                })
-        }
-        axiosData();
+    function fetchNewMerchs() {
+        axios.get(urlMerchNewRequests, { withCredentials: true })
+            .then(response => {
+                setmerchNewReq(response.data);
+            })
+            .catch(error => {
+                toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+                console.log(error)
+            })
+    }
+
+    useEffect(() => {
+        fetchNewInscr();
+        fetchNewMerchs();
     }, [])
 
     function deleteInscription(iid) {
         axios.delete(urlInscriptions + iid, { withCredentials: true })
             .then(response => {
                 toast.success('Se eliminó la inscripción correctamente.');
-                navigate("/adminnotifications");
+                fetchNewInscr()
             })
             .catch(error => {
                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');
@@ -56,7 +59,7 @@ export default function AdminNotifications() {
         axios.put(urlInscriptions, { iid: iid, payDate: payDate }, { withCredentials: true })
             .then(response => {
                 toast.success('Se registró la inscripción correctamente.');
-                navigate("/adminnotifications");
+                fetchNewInscr()
             })
             .catch(error => {
                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');
@@ -68,7 +71,7 @@ export default function AdminNotifications() {
         axios.delete(urlMerchRequests + mid, { withCredentials: true })
             .then(response => {
                 toast.success('Se eliminó la solicitud correctamente.');
-                navigate("/adminnotifications");
+                fetchNewMerchs()
             })
             .catch(error => {
                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');
@@ -81,7 +84,7 @@ export default function AdminNotifications() {
         axios.put(urlMarkPaidMerchRequests, { mid: mid, payDate: payDate }, { withCredentials: true })
             .then(response => {
                 toast.success('Se registró la solicitud correctamente.');
-                navigate("/adminnotifications");
+                fetchNewMerchs()
             })
             .catch(error => {
                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');

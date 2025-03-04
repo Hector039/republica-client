@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import axios from "../../config/axiosConfig";
 import { toast } from 'react-toastify';
 import "./assets/systemevents.css"
@@ -8,7 +8,6 @@ import "./assets/systemevents.css"
 const urlEvents = "events/"
 
 export default function SystemEvents() {
-    const navigate = useNavigate();
     const [events, setEvents] = useState([]);
 
     const {
@@ -19,9 +18,8 @@ export default function SystemEvents() {
         mode: "onBlur",
     });
 
-    useEffect(() => {
-        function axiosData() {
-            axios.get(urlEvents, { withCredentials: true })
+    function fetchEvents() {
+        axios.get(urlEvents, { withCredentials: true })
                 .then(response => {
                     setEvents(response.data);
                 })
@@ -29,15 +27,17 @@ export default function SystemEvents() {
                     toast.error('Ocurrió un error inesperado. Intenta de nuevo');
                     console.log(error)
                 })
-        }
-        axiosData();
-    }, [events]);
+    }
+
+    useEffect(() => {
+        fetchEvents();
+    }, []);
 
     function deleteEvent(eid) {
         axios.delete(urlEvents + eid, { withCredentials: true })
             .then(response => {
                 toast.success('Se eliminó el evento correctamente.');
-                navigate("/administrationevents");
+                fetchEvents();
             })
             .catch(error => {
                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');
@@ -54,7 +54,7 @@ export default function SystemEvents() {
         }, { withCredentials: true })
             .then(response => {
                 toast.success('Se creó el evento correctamente.');
-                //navigate("/administrationevents");
+                fetchEvents();
             })
             .catch(error => {
                 if (error.response.statusText && error.response.statusText === "Unauthorized") return toast.error(error.response.data.error);
