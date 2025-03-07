@@ -27,7 +27,7 @@ export default function App() {
 
   return (
     <UserProvider>
-      <BrowserRouter basename="/">
+      <BrowserRouter >
       <NavBar/>
         <Routes>
           <Route exact path={"/"} element={<Events />} />
