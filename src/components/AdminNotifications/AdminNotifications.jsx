@@ -15,6 +15,7 @@ const urlMarkPaidMerchRequests = "merchrequests/updatepaymentstatus/"
 export default function AdminNotifications() {
     const [inscrptionsNewReq, setinscrptionsNewReq] = useState([]);
     const [merchNewReq, setmerchNewReq] = useState([]);
+    const [amounts, setAmounts] = useState({});
     
         const {
                 register,
@@ -87,12 +88,18 @@ export default function AdminNotifications() {
             })
     }
 
-    function markPaidMerchRequest(mid, e) {
+    function markPaidMerchRequest(mid) {
         const payDate = date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate())
-        axios.put(urlMarkPaidMerchRequests, { mid: mid, payDate: payDate, amount: e.amount }, { withCredentials: true })
+        const amount = amounts[mid] || "";
+        if (!amount) {
+            toast.error("Por favor, ingresa un monto.");
+            return;
+        }
+        axios.put(urlMarkPaidMerchRequests, { mid: mid, payDate: payDate, amount: amount }, { withCredentials: true })
             .then(response => {
-                toast.success('Se registró la solicitud correctamente.');
-                fetchNewMerchs()
+                toast.success('Se registró el pago correctamente.');
+                fetchNewMerchs();
+                setAmounts(prev => ({ ...prev, [mid]: "" }));
             })
             .catch(error => {
                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');
@@ -152,7 +159,6 @@ export default function AdminNotifications() {
                             <tr>
                                 <th>Nombre</th>
                                 <th>Apellido</th>
-                                <th>Email</th>
                                 <th>Teléfono de contacto</th>
                                 <th>Fecha</th>
                                 <th>Talle</th>
@@ -169,18 +175,40 @@ export default function AdminNotifications() {
                                     <tr key={merchReq.id_request}>
                                         <th>{merchReq.first_name}</th>
                                         <th>{merchReq.last_name}</th>
-                                        <th>{merchReq.email}</th>
                                         <th>{merchReq.tel_contact}</th>
                                         <th>{merchReq.req_date.slice(0, -14)}</th>
                                         <th>{merchReq.size}</th>
                                         <th>{merchReq.quantity}</th>
                                         <th>{merchReq.req_description}</th>
                                         <th>{merchReq.pay_date ? "SI" : "NO"}</th>
-                                        <th>{!merchReq.pay_date &&
-                                                <form className="login-form" onSubmit={handleSubmit((e) => markPaidMerchRequest(merchReq.id_request, e))}>
-                                                    <input className="merch-input" type="text" name="amount" placeholder="Monto *" inputMode="numeric" pattern="\d*" title="Solo números."  {...register("amount", { required: true })} />
-                                                    <button className="merch-button" type="submit">Registrar pago</button>
-                                                </form>}
+                                        <th className="edit-event-buttons-container">
+                                            {!merchReq.pay_date && (
+                                                <div className="merch-input-container">
+                                                <input
+                                                    className="merch-input"
+                                                    type="text"
+                                                    name="amount"
+                                                    placeholder="Monto *"
+                                                    inputMode="numeric"
+                                                    pattern="\d*"
+                                                    title="Solo números."
+                                                    value={amounts[merchReq.id_request] || ""}
+                                                    onChange={(e) =>
+                                                        setAmounts(prev => ({
+                                                            ...prev,
+                                                            [merchReq.id_request]: e.target.value
+                                                        }))
+                                                    }
+                                                />
+                                                <button
+                                                    type="button"
+                                                    className="merch-button"
+                                                    onClick={() => markPaidMerchRequest(merchReq.id_request)}
+                                                >
+                                                    Registrar pago
+                                                </button>
+                                            </div>
+                                            )}
 
                                             <button className="delete-event-button" onClick={() => { deleteMerchRequest(merchReq.id_request) }}>Borrar</button></th>
                                     </tr>

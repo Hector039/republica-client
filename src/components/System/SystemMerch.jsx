@@ -66,7 +66,7 @@ export default function SystemMerch() {
 
         axios.put(urlMarkPaidMerchRequests, { mid: mid, payDate: payDate, amount: amount }, { withCredentials: true })
             .then(response => {
-                toast.success('Se registró la solicitud correctamente.');
+                toast.success('Se registró el pago correctamente.');
                 fetchMerch();
                 setAmounts(prev => ({ ...prev, [mid]: "" }));
             })
