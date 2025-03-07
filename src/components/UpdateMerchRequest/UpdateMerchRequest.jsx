@@ -58,7 +58,7 @@ export default function UpdateMerchRequest() {
 
 
     return (
-        <div className="user_update_merch_container">
+        <div  key={merchRequest.id_request} className="user_update_merch_container">
             <form onSubmit={handleSubmit(updateMerchRequest)} className="checkout-form">
                 <p>ID de la solicitud:</p>
                 <input type="text" name="id_request" disabled {...register("id_request")} />
