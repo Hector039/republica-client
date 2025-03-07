@@ -27,7 +27,7 @@ export default function App() {
 
   return (
     <UserProvider>
-      <BrowserRouter basename="https://republica-client.onrender.com/">
+      <BrowserRouter basename="/">
       <NavBar/>
         <Routes>
           <Route exact path={"/"} element={<Events />} />
