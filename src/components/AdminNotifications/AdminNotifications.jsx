@@ -1,8 +1,7 @@
 import { NavLink } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "../../config/axiosConfig";
 import { toast } from 'react-toastify';
-import { useForm } from "react-hook-form";
 
 const date = new Date();
 
@@ -16,14 +15,8 @@ export default function AdminNotifications() {
     const [inscrptionsNewReq, setinscrptionsNewReq] = useState([]);
     const [merchNewReq, setmerchNewReq] = useState([]);
     const [amounts, setAmounts] = useState({});
+    const inputRefs = useRef({});
     
-        const {
-                register,
-                handleSubmit,
-            } = useForm({
-                mode: "onBlur",
-            });
-
     function fetchNewInscr() {
         axios.get(urlInscriptionsNewRequests, { withCredentials: true })
             .then(response => {
@@ -95,11 +88,18 @@ export default function AdminNotifications() {
             toast.error("Por favor, ingresa un monto.");
             return;
         }
+
+        const inputRef = inputRefs.current[mid];
+
         axios.put(urlMarkPaidMerchRequests, { mid: mid, payDate: payDate, amount: amount }, { withCredentials: true })
             .then(response => {
                 toast.success('Se registró el pago correctamente.');
                 fetchNewMerchs();
                 setAmounts(prev => ({ ...prev, [mid]: "" }));
+
+                setTimeout(() => {
+                    if (inputRef) inputRef.focus();
+                }, 0);
             })
             .catch(error => {
                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');
@@ -185,6 +185,7 @@ export default function AdminNotifications() {
                                             {!merchReq.pay_date && (
                                                 <div className="merch-input-container">
                                                 <input
+                                                    ref={(el) => (inputRefs.current[merchReq.id_request] = el)}
                                                     className="merch-input"
                                                     type="text"
                                                     name="amount"
