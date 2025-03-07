@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "../../config/axiosConfig";
-import "./assets/passrestoration.css"
 import { toast } from 'react-toastify';
 
 const urlUserPassRestoration = "users/passrestoration"

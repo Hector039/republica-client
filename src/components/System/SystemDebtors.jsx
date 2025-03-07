@@ -37,7 +37,7 @@ export default function SystemDebtors() {
     });
 
     function getDebtorsUsers(e) {
-        
+
         if (e.selector === "monthly_payments") {
             axios.get(urlGetDebtors + e.day.slice(6) + "/" + e.day.slice(0, -6), { withCredentials: true })
                 .then(response => {
@@ -48,7 +48,7 @@ export default function SystemDebtors() {
                     toast.error('Ocurrió un error inesperado. Intenta de nuevo');
                 })
         } else if (e.selector === "annual_payments") {
-            axios.get(urlGetAnnualDebtors+ e.day.slice(0, -6), { withCredentials: true })
+            axios.get(urlGetAnnualDebtors + e.day.slice(0, -6), { withCredentials: true })
                 .then(response => {
                     setDebtorsUsers(response.data);
                 })
@@ -57,7 +57,7 @@ export default function SystemDebtors() {
                     toast.error('Ocurrió un error inesperado. Intenta de nuevo');
                 })
         } else if (e.selector === "merch_requests") {
-            axios.get(urlGetMerchDebtors+ e.day, { withCredentials: true })
+            axios.get(urlGetMerchDebtors + e.day, { withCredentials: true })
                 .then(response => {
                     setDebtorsUsers(response.data);
                 })
@@ -83,8 +83,8 @@ export default function SystemDebtors() {
         axios.post(urlChangeStatus, { uid: uid, userStatus: newStatus }, { withCredentials: true })
             .then(response => {
                 toast.success('Se cambió el estado del usuario.');
-                setDebtorsUsers(prevUsers => 
-                    prevUsers.map(user => 
+                setDebtorsUsers(prevUsers =>
+                    prevUsers.map(user =>
                         user.id_user === uid ? { ...user, user_status: newStatus } : user
                     )
                 );
@@ -97,7 +97,7 @@ export default function SystemDebtors() {
 
     function notifyDebtor(uid, date) {
         if (selectorChanger === "monthly_payments") {
-            axios.get(urlNotifyMonthlyDebtor + uid +"/"+ date, { withCredentials: true })
+            axios.get(urlNotifyMonthlyDebtor + uid + "/" + date, { withCredentials: true })
                 .then(response => {
                     toast.success('Se envió notificación al usuario.');
                 })
@@ -106,7 +106,7 @@ export default function SystemDebtors() {
                     toast.error('Ocurrió un error inesperado. Intenta de nuevo');
                 })
         } else if (selectorChanger === "annual_payments") {
-            axios.get(urlNotifyAnnualDebtor + uid +"/"+ date, { withCredentials: true })
+            axios.get(urlNotifyAnnualDebtor + uid + "/" + date, { withCredentials: true })
                 .then(response => {
                     toast.success('Se envió notificación al usuario.');
                 })
@@ -118,24 +118,24 @@ export default function SystemDebtors() {
     }
 
     function notifyAllDebtors(debtorsUsers, date) {
-        if (selectorChanger === "monthly_payments"){
+        if (selectorChanger === "monthly_payments") {
             axios.post(urlNotifyAllMonthlyDebtors, { debtorsArray: debtorsUsers, date: date }, { withCredentials: true })
-            .then(response => {
-                toast.success('Se enviaron las notificaciones a los usuarios.');
-            })
-            .catch(error => {
-                console.log(error);
-                toast.error('Ocurrió un error inesperado. Intenta de nuevo');
-            })
-        }else if (selectorChanger === "annual_payments"){
+                .then(response => {
+                    toast.success('Se enviaron las notificaciones a los usuarios.');
+                })
+                .catch(error => {
+                    console.log(error);
+                    toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+                })
+        } else if (selectorChanger === "annual_payments") {
             axios.post(urlNotifyAllAnnualDebtors, { debtorsArray: debtorsUsers, date: date }, { withCredentials: true })
-            .then(response => {
-                toast.success('Se enviaron las notificaciones a los usuarios.');
-            })
-            .catch(error => {
-                console.log(error);
-                toast.error('Ocurrió un error inesperado. Intenta de nuevo');
-            })
+                .then(response => {
+                    toast.success('Se enviaron las notificaciones a los usuarios.');
+                })
+                .catch(error => {
+                    console.log(error);
+                    toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+                })
         }
     }
 
@@ -152,20 +152,19 @@ export default function SystemDebtors() {
             <form onSubmit={handleSubmit(getDebtorsUsers)}>
                 <select {...register("selector")} onChange={handleSelector}>
                     <option value="monthly_payments" defaultChecked>Mensual</option>
-                    <option value="annual_payments">Anual</option>
+                    <option value="annual_payments">Matrícula</option>
                     <option value="merch_requests">Solicitudes</option>
-                    <option value="inscription_requests">Inscripciones</option>
+                    <option value="inscription_requests">Eventos</option>
                 </select>
                 <input type="date" id="day" name="day" value={dateChanger}  {...register("day", { required: true })} onChange={handleChange} />
                 <button type="submit" className="cuenta-button" >Consultar</button>
             </form>
 
             {debtorsUsers.length != 0 &&
-                <>
+                <div className="table_container">
                     <table>
                         <thead>
                             <tr>
-                                <th>ID</th>
                                 <th>Nombre</th>
                                 <th>Apellido</th>
                                 <th>Email</th>
@@ -180,7 +179,6 @@ export default function SystemDebtors() {
                             {
                                 debtorsUsers.map((user) => (
                                     <tr key={user.id_user}>
-                                        <th>{user.id_user}</th>
                                         <th>{user.first_name}</th>
                                         <th>{user.last_name}</th>
                                         <th>{user.email}</th>
@@ -190,7 +188,7 @@ export default function SystemDebtors() {
                                             <option value="1">Activo</option>
                                             <option value="0">Inactivo</option>
                                         </select></th>
-                                        <th><NavLink to={`/userpaymentshistory/${user.id_user}/${user.last_name}`} className="info-button">Ver</NavLink></th>
+                                        <th><NavLink to={`/userpaymentshistory/`} className="info-button">Ver</NavLink></th>
                                         <th>{(selectorChanger === "monthly_payments" || selectorChanger === "annual_payments") && <button className="boton-quitar-carrito" onClick={() => { notifyDebtor(user.id_user, dateChanger) }}>Notificar</button>}</th>
                                     </tr>
                                 ))
@@ -198,8 +196,9 @@ export default function SystemDebtors() {
 
                         </tbody>
                     </table>
-                    {(selectorChanger === "monthly_payments" || selectorChanger === "annual_payments") && <button className="boton-quitar-carrito" onClick={() => { notifyAllDebtors(debtorsUsers, dateChanger) }}>Notificar todos</button>} </>
-                
+                    {(selectorChanger === "monthly_payments" || selectorChanger === "annual_payments") && <button className="boton-quitar-carrito" onClick={() => { notifyAllDebtors(debtorsUsers, dateChanger) }}>Notificar todos</button>}
+                </div>
+
 
             }
             <NavLink to={`/administrationpayments`} className="info-button">Volver</NavLink>

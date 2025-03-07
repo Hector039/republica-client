@@ -5,23 +5,15 @@ import LogoFooter from "../NavBar/assets/logo.jpeg";
 import FacebookIcon from "./assets/facebook-icon.jpg";
 import InstagramIcon from "./assets/instagram-icon.jpg";
 import WhatsappIcon from "./assets/WhatsApp.svg.png";
-import"./assets/footer.css";
 
 export default function Footer() {
     return (
         <footer className="footer-bar">
             <div className="footer-main">
 
-                <div className="footer-brand">
-                    <Link to={"/"}>
-                        <img src={LogoFooter} alt="Tienda Logo" />
-                    </Link>
-
-                </div>
-
                 <div className="contacto-footer">
                     <div className="contacto">
-                        <div>
+                        <div className="iconos_footer">
                             <img src={PhoneIcon} alt="icono teléfono" />
                         </div>
                         <div>
@@ -30,7 +22,7 @@ export default function Footer() {
                         </div>
                     </div>
                     <div className="contacto">
-                        <div>
+                        <div className="iconos_footer">
                             <img src={LocationIcon} alt="icono Ubicación" />
                         </div>
                         <div>
@@ -52,6 +44,15 @@ export default function Footer() {
 
                     </div>
                 </div>
+
+                
+                <div className="footer-brand">
+                    <Link to={"/"}>
+                        <img src={LogoFooter} alt="Tienda Logo" />
+                    </Link>
+
+                </div>
+
 
                 
             </div>

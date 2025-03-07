@@ -7,7 +7,6 @@ import Swal from "sweetalert2";
 import withReactContent from 'sweetalert2-react-content'
 import { toast } from 'react-toastify';
 import { QRCodeSVG } from "qrcode.react";
-import "./assets/users.css";
 
 const MySwal = withReactContent(Swal)
 
@@ -72,8 +71,7 @@ export default function Users() {
 
                             const merchReq = response.data.merchReq;
                             const inscReq = response.data.inscReq;
-                            console.log(merchReq, inscReq);
-                            
+
                             if (merchReq.merch > 0 || inscReq.insc > 0) {
                                 MySwal.fire({
                                     title: "Tienes nuevas notificaciones! Deseas verlas?",
@@ -85,7 +83,7 @@ export default function Users() {
                                 }).then((result) => {
                                     if (result.isConfirmed) {
                                         navigate("/adminnotifications");
-                                    }else{
+                                    } else {
                                         navigate("/");
                                     }
                                 });
@@ -207,11 +205,12 @@ export default function Users() {
                                 <p>DNI: {user.dni}</p>
                                 <p>Teléfono de contacto: {user.tel_contact}</p>
                                 <p>Fecha de registro: {user.register_date.slice(0, -14)}</p>
-                                <div className="user-info-buttons">
-                                    <NavLink to={`/updateuser/${user.id_user}`} className="cuenta-button" style={({ isActive }) => { return { fontWeight: isActive ? "bold" : "" } }}>Actualizar datos</NavLink>
-                                    <NavLink to={`/userpaymentshistory/${user.id_user}/${user.last_name}`} className="cuenta-button" style={({ isActive }) => { return { fontWeight: isActive ? "bold" : "" } }}>Consultar historial de pagos</NavLink>
-                                </div>
                             </div>
+                            <div className="user-info-buttons">
+                                <NavLink to={`/updateuser/${user.id_user}`} className="cuenta-button" style={({ isActive }) => { return { fontWeight: isActive ? "bold" : "" } }}>Actualizar datos</NavLink>
+                                <NavLink to={`/userpaymentshistory/`} className="cuenta-button" style={({ isActive }) => { return { fontWeight: isActive ? "bold" : "" } }}>Historial de pagos</NavLink>
+                            </div>
+
                             <div className="qr-container">
                                 {user.is_admin == 1 && <button className="boton-quitar-carrito" onClick={() => { getQr() }}>Iniciar WhatsApp</button>}
                                 {qr != null && (qr ? <QRCodeSVG size={"256"} value={qr} /> : <p>Cargando QR...</p>)}

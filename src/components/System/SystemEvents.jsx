@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { NavLink } from "react-router-dom";
 import axios from "../../config/axiosConfig";
 import { toast } from 'react-toastify';
-import "./assets/systemevents.css"
 
 const urlEvents = "events/"
 
@@ -20,13 +19,13 @@ export default function SystemEvents() {
 
     function fetchEvents() {
         axios.get(urlEvents, { withCredentials: true })
-                .then(response => {
-                    setEvents(response.data);
-                })
-                .catch(error => {
-                    toast.error('Ocurrió un error inesperado. Intenta de nuevo');
-                    console.log(error)
-                })
+            .then(response => {
+                setEvents(response.data);
+            })
+            .catch(error => {
+                toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+                console.log(error)
+            })
     }
 
     useEffect(() => {
@@ -64,7 +63,6 @@ export default function SystemEvents() {
     }
 
     return (
-        <>
             <div className="sistema-container">
                 <h1>Crear eventos:</h1>
 
@@ -93,7 +91,6 @@ export default function SystemEvents() {
                                 <table>
                                     <thead>
                                         <tr>
-                                            <th>ID</th>
                                             <th>Fecha publicación</th>
                                             <th>Fecha Evento</th>
                                             <th>Nombre</th>
@@ -107,14 +104,13 @@ export default function SystemEvents() {
                                         {
                                             events.map((event) => (
                                                 <tr key={event.id_event}>
-                                                    <th>{event.id_event}</th>
                                                     <th>{event.publication_date.slice(0, -14)}</th>
                                                     <th>{event.event_date.slice(0, -14)}</th>
                                                     <th>{event.event_name}</th>
                                                     <th>{event.event_description}</th>
                                                     <th>{event.inscription_price}</th>
                                                     <th className="edit-event-buttons-container"> <button className="delete-event-button" onClick={() => { deleteEvent(event.id_event) }}>Borrar</button>
-                                                    {<NavLink to={`/updateevent/${event.id_event}`} className="edit-event-button" >Editar</NavLink>}</th>
+                                                        {<NavLink to={`/updateevent/${event.id_event}`} className="edit-event-button" >Editar</NavLink>}</th>
                                                 </tr>
                                             ))
                                         }
@@ -124,8 +120,7 @@ export default function SystemEvents() {
                             </>
                     }
                 </div>
+                <NavLink to={"/"} className="info-button" >Volver</NavLink>
             </div>
-            <NavLink to={"/"} className="info-button" >Volver</NavLink>
-        </>
     )
 }

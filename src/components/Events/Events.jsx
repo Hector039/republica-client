@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import { NavLink } from "react-router-dom";
 import { toast } from 'react-toastify';
 import Swal from "sweetalert2";
-import "./assets/home.css";
 
 const urlEvents = "events/"
 const urlInscriptions = "inscriptions/alluserinscriptions/"
@@ -146,7 +145,7 @@ export default function Events() {
             </div>
 
             {userInscriptions.length != 0 &&
-                <div>
+                <div className="table_container">
                     <h2>Mis inscripciones</h2>
                     <table>
                         <thead>
@@ -170,7 +169,7 @@ export default function Events() {
                                         <th>{event.event_description}</th>
                                         <th>${event.inscription_price}</th>
                                         <th>{event.pay_date ? "PAGADA" : "PENDIENTE"}</th>
-                                        <th><button className="boton-quitar-carrito" onClick={() => { deleteInscription(event.id_inscription) }}>Borrar inscripción</button></th>
+                                        <th><button className="boton-quitar-carrito" onClick={() => { deleteInscription(event.id_inscription) }}>Borrar</button></th>
                                     </tr>
                                 ))
                             }
@@ -178,12 +177,11 @@ export default function Events() {
                     </table></div>}
 
             {merchRequests.length != 0 &&
-                <div>
+                <div className="table_container">
                     <h2>Mis solicitudes</h2>
                     <table>
                         <thead>
                             <tr>
-                                <th>ID</th>
                                 <th>Talle</th>
                                 <th>Fecha de la solicitud</th>
                                 <th>Cantidad</th>
@@ -196,7 +194,6 @@ export default function Events() {
                             {
                                 merchRequests.map((request) => (
                                     <tr key={request.id_request}>
-                                        <th>{request.id_request}</th>
                                         <th>{request.size}</th>
                                         <th>{request.req_date.slice(0, -14)}</th>
                                         <th>{request.quantity}</th>
@@ -233,7 +230,7 @@ export default function Events() {
 
             <div className="products-container">
                 {events.length != 0 &&
-                    <div>
+                    <div className="table_container">
                         <h2>Eventos</h2>
                         <table>
                             <thead>

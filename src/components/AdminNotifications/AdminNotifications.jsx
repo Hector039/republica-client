@@ -1,7 +1,8 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "../../config/axiosConfig";
 import { toast } from 'react-toastify';
+import { useForm } from "react-hook-form";
 
 const date = new Date();
 
@@ -14,6 +15,13 @@ const urlMarkPaidMerchRequests = "merchrequests/updatepaymentstatus/"
 export default function AdminNotifications() {
     const [inscrptionsNewReq, setinscrptionsNewReq] = useState([]);
     const [merchNewReq, setmerchNewReq] = useState([]);
+    
+        const {
+                register,
+                handleSubmit,
+            } = useForm({
+                mode: "onBlur",
+            });
 
     function fetchNewInscr() {
         axios.get(urlInscriptionsNewRequests, { withCredentials: true })
@@ -79,9 +87,9 @@ export default function AdminNotifications() {
             })
     }
 
-    function markPaidMerchRequest(mid) {
+    function markPaidMerchRequest(mid, e) {
         const payDate = date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate())
-        axios.put(urlMarkPaidMerchRequests, { mid: mid, payDate: payDate }, { withCredentials: true })
+        axios.put(urlMarkPaidMerchRequests, { mid: mid, payDate: payDate, amount: e.amount }, { withCredentials: true })
             .then(response => {
                 toast.success('Se registró la solicitud correctamente.');
                 fetchNewMerchs()
@@ -102,7 +110,6 @@ export default function AdminNotifications() {
                     <table>
                         <thead>
                             <tr>
-                                <th>ID de usuario</th>
                                 <th>Nombre</th>
                                 <th>Apellido</th>
                                 <th>Email</th>
@@ -120,7 +127,6 @@ export default function AdminNotifications() {
                             {
                                 inscrptionsNewReq.map((inscription) => (
                                     <tr key={inscription.id_inscription}>
-                                        <th>{inscription.id_user}</th>
                                         <th>{inscription.first_name}</th>
                                         <th>{inscription.last_name}</th>
                                         <th>{inscription.email}</th>
@@ -146,7 +152,6 @@ export default function AdminNotifications() {
                     <table>
                         <thead>
                             <tr>
-                                <th>ID de usuario</th>
                                 <th>Nombre</th>
                                 <th>Apellido</th>
                                 <th>Email</th>
@@ -164,7 +169,6 @@ export default function AdminNotifications() {
                             {
                                 merchNewReq.map((merchReq) => (
                                     <tr key={merchReq.id_request}>
-                                        <th>{merchReq.id_user}</th>
                                         <th>{merchReq.first_name}</th>
                                         <th>{merchReq.last_name}</th>
                                         <th>{merchReq.email}</th>
@@ -174,7 +178,12 @@ export default function AdminNotifications() {
                                         <th>{merchReq.quantity}</th>
                                         <th>{merchReq.req_description}</th>
                                         <th>{merchReq.pay_date ? "SI" : "NO"}</th>
-                                        <th>{!merchReq.pay_date && <button className="edit-event-button" onClick={() => { markPaidMerchRequest(merchReq.id_request) }}>Registrar pago</button>}
+                                        <th>{!merchReq.pay_date &&
+                                                <form className="login-form" onSubmit={handleSubmit((e) => markPaidMerchRequest(merchReq.id_request, e))}>
+                                                    <input className="merch-input" type="text" name="amount" placeholder="Monto *" inputMode="numeric" pattern="\d*" title="Solo números."  {...register("amount", { required: true })} />
+                                                    <button className="merch-button" type="submit">Registrar pago</button>
+                                                </form>}
+
                                             <button className="delete-event-button" onClick={() => { deleteMerchRequest(merchReq.id_request) }}>Borrar</button></th>
                                     </tr>
                                 ))

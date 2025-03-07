@@ -3,13 +3,15 @@ import axios from "../../config/axiosConfig";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { toast } from 'react-toastify';
-import "./assets/systempayments.css"
 
 const date = new Date();
+
 const urlUsers = "users/"
 const urlAddMonthPayment = "monthlypayments/"
 const urlAddAnnualPayment = "annualpayments/"
-const urlTotalDayPayments = "utils/daytotalpayments/"
+
+const urlNewExpenditure = "utils/expenditures/"
+const urlAddLinkedMonthPayment = "monthlypayments/linkedpayment/"
 
 export default function SystemPayments() {
 
@@ -17,11 +19,7 @@ export default function SystemPayments() {
     const today = date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0");
 
     const [users, setUsers] = useState([])
-    const [dateChanger, setDateChanger] = useState(payDate)
     const [userDates, setUserDates] = useState({});
-    const [totalDay, setTotalDay] = useState([])
-    const [queryDay, setQueryDay] = useState([])
-
 
     const {
         register,
@@ -30,12 +28,14 @@ export default function SystemPayments() {
         mode: "onBlur",
     });
 
+
     const {
-        register: register3,
-        handleSubmit: handleSubmit3
+        register: register4,
+        handleSubmit: handleSubmit4
     } = useForm({
         mode: "onBlur",
     });
+
 
     function getUsers(e) {
         axios.post(urlUsers, { search: e.search, value: e.value }, { withCredentials: true })
@@ -69,6 +69,15 @@ export default function SystemPayments() {
                     console.log(error);
                     toast.error('Ocurrió un error inesperado. Intenta de nuevo');
                 })
+        } else if (buttonType === "linked") {
+            axios.post(urlAddLinkedMonthPayment, { uid: uid, month: dateArray[1], year: dateArray[0], payDate: payDate, isLinked: 1 }, { withCredentials: true })
+                .then(response => {
+                    toast.success('Se registró el pago mensual por vínculo del usuario.');
+                })
+                .catch(error => {
+                    console.log(error);
+                    toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+                })
         }
 
     }
@@ -80,21 +89,17 @@ export default function SystemPayments() {
         addPayment(selectedDate, uid, buttonType);
     };
 
-    function getDayTotalPayments(e) {
-        axios.get(urlTotalDayPayments + e.day, { withCredentials: true })
+    function newExpenditure(e) {
+        axios.post(urlNewExpenditure, { descr: e.descr, amount: e.amount, payDate: payDate }, { withCredentials: true })
             .then(response => {
-                setQueryDay(e.day)
-                setTotalDay(response.data);
+                toast.success('Se registró el egreso.');
             })
             .catch(error => {
                 console.log(error);
-                toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+                toast.error('Ocurrió un error inesperado');
             })
     }
 
-    const handleChange = (event) => {
-        setDateChanger(event.target.value);
-    }
     const handleChange2 = (event, uid) => {
         setUserDates(prevState => ({
             ...prevState,
@@ -106,43 +111,9 @@ export default function SystemPayments() {
         <div className="carrito">
             <h1>Gestión de pagos:</h1>
 
-            <h2>Consulta de caja diaria:</h2>
-            <form onSubmit={handleSubmit3(getDayTotalPayments)} className="checkout-form">
-                <input type="date" id="day" name="day" value={dateChanger} {...register3("day", { required: true })} onChange={handleChange} />
-                <button type="submit" className="cuenta-button" >Consultar</button>
-            </form>
-            {
-                totalDay.length != 0 &&
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Día consultado</th>
-                            <th>Motivo</th>
-                            <th>Cantidad de registros</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                        {
-                            totalDay.map((day) => (
-                                <tr key={day.id}>
-                                    <th>{queryDay}</th>
-                                    {day.table_name === "monthly_payments" && <th>Mensuales</th>}
-                                    {day.table_name === "annual_payments" && <th>Anuales</th>}
-                                    {day.table_name === "merch_requests" && <th>Encargues</th>}
-                                    {day.table_name === "inscription_requests" && <th>Inscripciones</th>}
-                                    <th>{day.total}</th>
-                                </tr>
-                            ))
-                        }
-
-                    </tbody>
-                </table>
-            }
-
             <h2>Registro de pagos:</h2>
             <form onSubmit={handleSubmit(getUsers)} className="checkout-form">
-                <label>Buscar usuario por: 
+                <label>Buscar usuario por:
                     <select {...register("search")}>
                         <option value="TODO" defaultChecked>Todo</option>
                         <option value="first_name">Nombre</option>
@@ -158,57 +129,66 @@ export default function SystemPayments() {
                 <button type="submit" className="cuenta-button">Buscar</button>
             </form>
 
-            {users.length &&
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Apellido</th>
-                            <th>DNI</th>
-                            <th>Teléfono</th>
-                            <th>Registrado</th>
-                            <th>Estado</th>
-                            <th>Tarifa</th>
-                            <th>Fecha a registrar</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+            {users.length > 0 &&
+                <div className="table_container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>DNI</th>
+                                <th>Registrado</th>
+                                <th>Estado</th>
+                                <th>Tarifa</th>
+                                <th>Fecha a registrar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
 
-                        {
-                            users.map((user) => (
-                                <tr key={user.id_user}>
-                                    <th>{user.id_user}</th>
-                                    <th>{user.first_name}</th>
-                                    <th>{user.last_name}</th>
-                                    <th>{user.dni}</th>
-                                    <th>{user.tel_contact}</th>
-                                    <th>{user.register_date.slice(0, -14)}</th>
-                                    <th>{user.user_status ? "ACTIVO" : "INACTIVO"}</th>
-                                    <th>{user.fee}</th>
-                                    <th><form onSubmit={e => handleSubmit2(e, user.id_user)} className="checkout-form">
-                                        <input
-                                            type="month"
-                                            id="month_paid"
-                                            name="month_paid"
-                                            value={userDates[user.id_user] || today}
-                                            onChange={(e) => handleChange2(e, user.id_user)}
-                                            required
-                                        />
-                                        <div className="register-payments-buttons-container">
-                                            <button className="payments-buttons" type="submit" name="month" >Registrar mes</button>
-                                            <button className="payments-buttons" type="submit" name="year" >Registrar año</button>
-                                        </div>
-                                    </form>
-                                    </th>
-                                </tr>
-                            ))
-                        }
+                            {
+                                users.map((user) => (
+                                    <tr key={user.id_user}>
+                                        <th>{user.first_name}</th>
+                                        <th>{user.last_name}</th>
+                                        <th>{user.dni}</th>
+                                        <th>{user.register_date.slice(0, -14)}</th>
+                                        <th>{user.user_status ? "ACTIVO" : "INACTIVO"}</th>
+                                        <th>{user.id_fee}</th>
+                                        <th><form onSubmit={e => handleSubmit2(e, user.id_user)} >
+                                            <input
+                                                type="month"
+                                                id="month_paid"
+                                                name="month_paid"
+                                                value={userDates[user.id_user] || today}
+                                                onChange={(e) => handleChange2(e, user.id_user)}
+                                                required
+                                            />
+                                            <div className="register-payments-buttons-container">
+                                                <button className="payments-buttons" type="submit" name="linked" >Registrar mes por vínculo</button>
+                                                <button className="payments-buttons" type="submit" name="month" >Registrar mes</button>
+                                                <button className="payments-buttons" type="submit" name="year" >Registrar Matricula</button>
+                                            </div>
+                                        </form>
+                                        </th>
+                                    </tr>
+                                ))
+                            }
 
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             }
+            <h2>Egresos:</h2>
+            <form onSubmit={handleSubmit4(newExpenditure)} className="checkout-form">
+                <input type="text" name="descr" placeholder="Descripción o motivo" {...register4("descr", { required: true })} />
+                <input type="number" name="amount" min={"0"} defaultValue={0} placeholder="Monto" {...register4("amount", { required: true })} />
+                <button type="submit" className="cuenta-button">Ingresar egreso</button>
+            </form>
+
             <NavLink to={`/administrationdebtors`} className="get-debtors-button">Consultar deudores activos</NavLink>
+            <NavLink to={`/fees`} className="get-debtors-button">Tarifario</NavLink>
+            <NavLink to={`/daily`} className="get-debtors-button">Consultar caja diaria</NavLink>
+            <NavLink to={`/expenditures`} className="get-debtors-button">Consultar egresos mensuales</NavLink>
             <NavLink to={`/`} className="info-button">Volver</NavLink>
 
 

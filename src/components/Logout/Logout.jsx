@@ -1,5 +1,4 @@
-import { useNavigate, NavLink } from 'react-router-dom';
-import "./assets/logout.css"
+import { useNavigate } from 'react-router-dom';
 import { useUser } from "../context/dataContext";
 
 export default function Logout() {
@@ -19,7 +18,6 @@ export default function Logout() {
     return (
         <div className="logout-container">
             <h2>Te esperamos pronto!</h2>
-            <NavLink to={"/users"} className="logout-button">Volver a loguearse</NavLink>
         </div>
     )
 }

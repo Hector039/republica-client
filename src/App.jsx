@@ -19,12 +19,15 @@ import SystemPayments from "./components/System/SystemPayments";
 import SystemDebtors from "./components/System/SystemDebtors";
 import UserPaymentsHistory from "./components/System/UserPaymentsHistory";
 import Footer from "./components/Footer/Footer";
+import Fees from "./components/Fees/Fees";
+import Daily from "./components/Daily/Daily";
+import Expenditures from "./components/Expenditures/Expenditures";
 
 export default function App() {
 
   return (
     <UserProvider>
-      <BrowserRouter>
+      <BrowserRouter basename="https://republica-client.onrender.com/">
       <NavBar/>
         <Routes>
           <Route exact path={"/"} element={<Events />} />
@@ -38,11 +41,14 @@ export default function App() {
           <Route exact path={"/administrationusers"} element={<SystemUsers />} />
           <Route exact path={"/administrationevents"} element={<SystemEvents />} />
           <Route exact path={"/updateevent/:eid"} element={<UpdateEvent />} />
+          <Route exact path={"/fees"} element={<Fees />} />
           <Route exact path={"/administrationinscriptions"} element={<SystemInscriptions />} />
           <Route exact path={"/administrationmerch"} element={<SystemMerch />} />
           <Route exact path={"/administrationpayments"} element={<SystemPayments />} />
+          <Route exact path={"/expenditures"} element={<Expenditures />} />
+          <Route exact path={"/daily"} element={<Daily />} />
           <Route exact path={"/administrationdebtors"} element={<SystemDebtors />} />
-          <Route exact path={"/userpaymentshistory/:uid/:lastname"} element={<UserPaymentsHistory />} />
+          <Route exact path={"/userpaymentshistory/"} element={<UserPaymentsHistory />} />
 
           <Route exact path={"/adminnotifications"} element={<AdminNotifications />} />
         </Routes>

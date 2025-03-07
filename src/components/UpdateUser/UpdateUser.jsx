@@ -104,7 +104,7 @@ export default function UpdateUser() {
     }
 
     return (
-        <div>
+        <div className="update_user_container">
             <form onSubmit={handleSubmit(updateUser)} className="checkout-form">
                 <input type="number" name="dni" disabled {...register("dni", { required: true })} />
                 <input type="text" name="first_name" maxLength="15" pattern="[A-Za-zÀ-ÿ\u00f1\u00d1]{3,15}" title="No uses símbolos ni números. Min 3, Max 15 carácteres." {...register("first_name", { required: true })} />

@@ -3,7 +3,6 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import axios from "../../config/axiosConfig";
 import Swal from "sweetalert2";
 import { toast } from 'react-toastify';
-import "./assets/forgot.css"
 
 const urlUserForgot = "users/changeorforgot"
 

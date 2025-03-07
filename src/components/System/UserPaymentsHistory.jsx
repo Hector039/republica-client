@@ -1,72 +1,83 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "../../config/axiosConfig";
 import { toast } from 'react-toastify';
-import { useUser } from "../context/dataContext";
 
 const urlMonthlyHistory = "monthlypayments/"
 const urlUserAnnualHistory = "annualpayments/"
 const urlUserInscriptionHistory = "inscriptions/"
 const urlUserMerchHistory = "merchrequests/"
+const urlUser = "users/"
 
 export default function UserPaymentsHistory() {
-    const { uid, lastname } = useParams();
     const [monthlyPaymentsHistory, setMonthlyPaymentsHistory] = useState([])
     const [annualPaymentsHistory, setAnnualPaymentsHistory] = useState([])
     const [merchHistory, setMerchHistory] = useState([])
     const [inscriptionHistory, setInscriptionHistory] = useState([])
-    const { user } = useUser();
 
     useEffect(() => {
         function axiosData() {
-            axios.get(urlMonthlyHistory + uid, { withCredentials: true })
-                .then(response => {
-                    setMonthlyPaymentsHistory(response.data);
-                })
-                .catch(error => {
-                    console.log(error);
-                    toast.error('Ocurrió un error inesperado. Intenta de nuevo');
-                })
-                axios.get(urlUserAnnualHistory + uid, { withCredentials: true })
-                .then(response => {
-                    setAnnualPaymentsHistory(response.data);
-                })
-                .catch(error => {
-                    console.log(error);
-                    toast.error('Ocurrió un error inesperado. Intenta de nuevo');
-                })
-            axios.get(urlUserInscriptionHistory + uid, { withCredentials: true })
-                .then(response => {
-                    setInscriptionHistory(response.data);
-                })
-                .catch(error => {
-                    console.log(error);
-                    toast.error('Ocurrió un error inesperado. Intenta de nuevo');
-                })
-            axios.get(urlUserMerchHistory + uid, { withCredentials: true })
-                .then(response => {
-                    setMerchHistory(response.data);
-                })
-                .catch(error => {
-                    console.log(error);
-                    toast.error('Ocurrió un error inesperado. Intenta de nuevo');
-                })
+            if (sessionStorage.getItem("temp")) {
+                axios.get(urlUser + sessionStorage.getItem("temp"), { withCredentials: true })
+                    .then(response => {
+                        const idUser = response.data.id_user;
+
+                        axios.get(urlMonthlyHistory + idUser, { withCredentials: true })
+                            .then(response => {
+                                setMonthlyPaymentsHistory(response.data);
+                            })
+                            .catch(error => {
+                                console.log(error);
+                                toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+                            })
+                        axios.get(urlUserAnnualHistory + idUser, { withCredentials: true })
+                            .then(response => {
+                                setAnnualPaymentsHistory(response.data);
+                            })
+                            .catch(error => {
+                                console.log(error);
+                                toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+                            })
+                        axios.get(urlUserInscriptionHistory + idUser, { withCredentials: true })
+                            .then(response => {
+                                setInscriptionHistory(response.data);
+                            })
+                            .catch(error => {
+                                console.log(error);
+                                toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+                            })
+                        axios.get(urlUserMerchHistory + idUser, { withCredentials: true })
+                            .then(response => {
+                                setMerchHistory(response.data);
+                            })
+                            .catch(error => {
+                                console.log(error);
+                                toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+                            })
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+                    })
+            }
+
+
+
         }
         axiosData();
     }, []);
 
     return (
         <div className="cuenta-main">
-            <h1>Historial de pagos de {lastname}:</h1>
+            <h1>Historial de pagos:</h1>
 
             <section className="cuenta-info">
-                <h2>Historial mensual:</h2>
+                <h2>Mensuales:</h2>
                 {!monthlyPaymentsHistory.length ? <p className="info-text-register">Sin datos</p> :
 
                     <table>
                         <thead>
                             <tr>
-                                <th>ID registro</th>
                                 <th>Fecha del registro</th>
                                 <th>Mes</th>
                                 <th>Año</th>
@@ -77,7 +88,6 @@ export default function UserPaymentsHistory() {
                             {
                                 monthlyPaymentsHistory.map((payment) => (
                                     <tr key={payment.id_payment}>
-                                        <th>{payment.id_payment}</th>
                                         <th>{payment.pay_date.slice(0, -14)}</th>
                                         <th>{payment.month_paid}</th>
                                         <th>{payment.year_paid}</th>
@@ -88,13 +98,12 @@ export default function UserPaymentsHistory() {
                         </tbody>
 
                     </table>}
-                    <h2>Historial anual:</h2>
+                <h2>Matrículas:</h2>
                 {!annualPaymentsHistory.length ? <p className="info-text-register">Sin datos</p> :
 
                     <table>
                         <thead>
                             <tr>
-                                <th>ID registro</th>
                                 <th>Fecha del registro</th>
                                 <th>Año</th>
                             </tr>
@@ -104,7 +113,6 @@ export default function UserPaymentsHistory() {
                             {
                                 annualPaymentsHistory.map((payment) => (
                                     <tr key={payment.id_payment}>
-                                        <th>{payment.id_payment}</th>
                                         <th>{payment.pay_date.slice(0, -14)}</th>
                                         <th>{payment.year_paid}</th>
                                     </tr>
@@ -114,7 +122,7 @@ export default function UserPaymentsHistory() {
                         </tbody>
 
                     </table>}
-                <h2>Historial inscripciones:</h2>
+                <h2>Eventos:</h2>
                 {!inscriptionHistory.length ? <p className="info-text-register">Sin datos</p> :
                     <table>
                         <thead>
@@ -139,7 +147,7 @@ export default function UserPaymentsHistory() {
                         </tbody>
 
                     </table>}
-                <h2>Historial de solicitudes:</h2>
+                <h2>Solicitudes:</h2>
                 {!merchHistory.length ? <p className="info-text-register">Sin datos</p> :
                     <table>
                         <thead>
@@ -165,7 +173,7 @@ export default function UserPaymentsHistory() {
 
                     </table>}
             </section>
-            {user.is_admin == 1 ? <Link to={"/administrationdebtors"} className="info-button">Volver</Link> : <Link to={"/users"} className="info-button">Volver</Link>}
+            <Link to={"/users"} className="info-button">Volver</Link>
         </div>
     )
 }

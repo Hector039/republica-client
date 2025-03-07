@@ -2,7 +2,6 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import logo from "./assets/logo.jpeg";
 import axios from "../../config/axiosConfig";
 import { useUser } from "../context/dataContext";
-import "./assets/navbar.css";
 
 const urlUserLogout = "users/logout"
 
@@ -22,7 +21,7 @@ export default function NavBar() {
     
     return (
         <nav className="navbar">
-            <div className="bottom-navbar">
+            
                 <div className="navbar-brand">
                     <Link to={"/"}><img src={logo} alt="Logo Gimnasio Republica del oeste" /></Link>
                 </div>
@@ -47,7 +46,7 @@ export default function NavBar() {
                     <button onClick={logout}>Cerrar sesión</button>
 
                 </div>}
-            </div>
+            
         </nav >
     )
 }
