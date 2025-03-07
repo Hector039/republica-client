@@ -721,13 +721,6 @@ select {
   background: rgb(117, 62, 149);
 }
 
-.user_update_merch_container{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
 .merch-input {
   width: 125px;
 }

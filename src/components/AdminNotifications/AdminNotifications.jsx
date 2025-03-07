@@ -112,7 +112,6 @@ export default function AdminNotifications() {
                             <tr>
                                 <th>Nombre</th>
                                 <th>Apellido</th>
-                                <th>Email</th>
                                 <th>Teléfono de contacto</th>
                                 <th>Nombre evento</th>
                                 <th>Fecha evento</th>
@@ -129,7 +128,6 @@ export default function AdminNotifications() {
                                     <tr key={inscription.id_inscription}>
                                         <th>{inscription.first_name}</th>
                                         <th>{inscription.last_name}</th>
-                                        <th>{inscription.email}</th>
                                         <th>{inscription.tel_contact}</th>
                                         <th>{inscription.event_name}</th>
                                         <th>{inscription.event_date.slice(0, -14)}</th>
