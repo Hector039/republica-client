@@ -10,18 +10,13 @@ export const UserProvider = ({ children }) => {
 
     useEffect(() => {
         function axiosData() {
-            if (sessionStorage.getItem("temp")) {
-                axios.get(urlUser + sessionStorage.getItem("temp"), { withCredentials: true })
-                .then(response => {
-                    setUser(response.data);
-                })
-                .catch(error => {
-                    toast.error(error);
-                })
-            }else{
-                setUser(null);
-            }
-            
+                axios.get(urlUser)
+                    .then(response => {
+                        setUser(response.data);
+                    })
+                    .catch(error => {
+                        toast.error(error);
+                    })
         }
         axiosData();
     }, [])

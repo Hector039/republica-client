@@ -2,16 +2,16 @@ import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { useUser } from "../context/dataContext";
 import axios from "../../config/axiosConfig";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import Swal from "sweetalert2";
 
 const urlUser = "users/"
+const urlUpdateUser = "users/updateuser"
 const urlPassChanger = "users/changeorforgot"
 
 export default function UpdateUser() {
     const navigate = useNavigate();
-    const { uid } = useParams();
     const { user, setUser } = useUser();
 
     const {
@@ -32,7 +32,7 @@ export default function UpdateUser() {
 
     useEffect(() => {
         function axiosData() {
-            axios.get(urlUser + uid, { withCredentials: true })
+            axios.get(urlUser, { withCredentials: true })
                 .then(response => {
                     setUser(response.data);
                     const preFix = response.data.tel_contact.slice(2, -9)
@@ -57,7 +57,7 @@ export default function UpdateUser() {
 
     const updateUser = (e) => {
         const telContact = `54${e.tel_pre}15${e.tel_contact}`
-        axios.put(urlUser + user.id_user, {
+        axios.put(urlUpdateUser, {
             first_name: e.first_name,
             last_name: e.last_name,
             email: e.email,
@@ -74,7 +74,7 @@ export default function UpdateUser() {
                     showConfirmButton: true
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        navigate(`/users`);
+                        navigate(`/`);
                     }
                 });
             })
@@ -93,7 +93,7 @@ export default function UpdateUser() {
                     showConfirmButton: true
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        navigate(`/users`);
+                        navigate(`/`);
                     }
                 });
             })
@@ -106,10 +106,10 @@ export default function UpdateUser() {
     return (
         <div className="update_user_container">
             <form onSubmit={handleSubmit(updateUser)} className="checkout-form">
-                <input type="number" name="dni" disabled {...register("dni", { required: true })} />
-                <input type="text" name="first_name" maxLength="15" pattern="[A-Za-zÀ-ÿ\u00f1\u00d1]{3,15}" title="No uses símbolos ni números. Min 3, Max 15 carácteres." {...register("first_name", { required: true })} />
-                <input type="text" name="last_name" maxLength="15" pattern="[A-Za-zÀ-ÿ\u00f1\u00d1]{3,15}" title="No uses símbolos ni números. Min 3, Max 15 carácteres." {...register("last_name", { required: true })} />
-                <input type="email" name="email" {...register("email", { required: true })} />
+                <input type="number" name="dni" {...register("dni", { required: true })} />
+                <input type="text" name="first_name" maxLength="30" pattern="^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]{3,30}$" title="No uses símbolos ni números. Min 3, Max 30 carácteres." {...register("first_name", { required: true })} />
+                <input type="text" name="last_name" maxLength="30" pattern="^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]{3,30}$" title="No uses símbolos ni números. Min 3, Max 30 carácteres." {...register("last_name", { required: true })} />
+                <input type="email" name="email" {...register("email")} />
                 <input type="date" name="birth_date" {...register("birth_date", { required: true })} />
                 <p className="info-text-register">Teléfono ejemplo: 123 1234567</p>
                 <div className="telephone-container">
@@ -138,7 +138,7 @@ export default function UpdateUser() {
                 </div>
 
             </form>
-            <Link to={"/users"} className="info-button">Volver</Link>
+            <Link to={"/"} className="info-button">Volver</Link>
         </div>
     )
 }

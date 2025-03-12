@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useParams, NavLink } from "react-router-dom";
 import axios from "../../config/axiosConfig";
 import { toast } from 'react-toastify';
 
@@ -7,9 +7,9 @@ const urlMonthlyHistory = "monthlypayments/"
 const urlUserAnnualHistory = "annualpayments/"
 const urlUserInscriptionHistory = "inscriptions/"
 const urlUserMerchHistory = "merchrequests/"
-const urlUser = "users/"
 
-export default function UserPaymentsHistory() {
+export default function DebtorPaymentsHistory() {
+    const { uid } = useParams()
     const [monthlyPaymentsHistory, setMonthlyPaymentsHistory] = useState([])
     const [annualPaymentsHistory, setAnnualPaymentsHistory] = useState([])
     const [merchHistory, setMerchHistory] = useState([])
@@ -18,11 +18,7 @@ export default function UserPaymentsHistory() {
 
     useEffect(() => {
         function axiosData() {
-                axios.get(urlUser)
-                    .then(response => {
-                        const idUser = response.data.id_user;
-
-                        axios.get(urlMonthlyHistory + idUser, { withCredentials: true })
+            axios.get(urlMonthlyHistory + uid, { withCredentials: true })
                             .then(response => {
                                 setMonthlyPaymentsHistory(response.data);
                             })
@@ -30,7 +26,7 @@ export default function UserPaymentsHistory() {
                                 console.log(error);
                                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');
                             })
-                        axios.get(urlUserAnnualHistory + idUser, { withCredentials: true })
+                        axios.get(urlUserAnnualHistory + uid, { withCredentials: true })
                             .then(response => {
                                 setAnnualPaymentsHistory(response.data);
                             })
@@ -38,7 +34,7 @@ export default function UserPaymentsHistory() {
                                 console.log(error);
                                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');
                             })
-                        axios.get(urlUserInscriptionHistory + idUser, { withCredentials: true })
+                        axios.get(urlUserInscriptionHistory + uid, { withCredentials: true })
                             .then(response => {
                                 setInscriptionHistory(response.data);
                             })
@@ -46,7 +42,7 @@ export default function UserPaymentsHistory() {
                                 console.log(error);
                                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');
                             })
-                        axios.get(urlUserMerchHistory + idUser, { withCredentials: true })
+                        axios.get(urlUserMerchHistory + uid, { withCredentials: true })
                             .then(response => {
                                 setMerchHistory(response.data);
                             })
@@ -54,14 +50,6 @@ export default function UserPaymentsHistory() {
                                 console.log(error);
                                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');
                             })
-                    })
-                    .catch(error => {
-                        console.log(error);
-                        toast.error('Ocurrió un error inesperado. Intenta de nuevo');
-                    })
-
-
-
         }
         axiosData();
     }, []);
@@ -172,6 +160,7 @@ export default function UserPaymentsHistory() {
 
                     </table>}
             </section>
+            <NavLink to={`/administrationdebtors`} className="info-button">Volver</NavLink>
         </div>
     )
 }

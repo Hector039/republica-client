@@ -34,15 +34,15 @@ export default function NavBar() {
                             <NavLink to={"/administrationevents"} className="navbar-item-sistema" style={({ isActive }) => { return { fontWeight: isActive ? "bold" : "" } }}>Eventos</NavLink>
                             <NavLink to={"/administrationinscriptions"} className="navbar-item-sistema" style={({ isActive }) => { return { fontWeight: isActive ? "bold" : "" } }}>Inscripciones</NavLink>
                             <NavLink to={"/administrationmerch"} className="navbar-item-sistema" style={({ isActive }) => { return { fontWeight: isActive ? "bold" : "" } }}>Encargues</NavLink>
-                            <NavLink to={"/users"} className="navbar-item" style={({ isActive }) => { return { fontWeight: isActive ? "bold" : "" } }}>Mi Cuenta</NavLink></> :
-                        <><NavLink to={"/"} className="navbar-item" style={({ isActive }) => { return { fontWeight: isActive ? "bold" : "" } }}>Inicio</NavLink>
-                            <NavLink to={"/users"} className="navbar-item" style={({ isActive }) => { return { fontWeight: isActive ? "bold" : "" } }}>Mi Cuenta</NavLink></>
+                            </> :
+                        <><NavLink to={"/"} className="navbar-item" style={({ isActive }) => { return { fontWeight: isActive ? "bold" : "" } }}>Inicio</NavLink></>
+                            
                     }
                 </div>
 
                 {user && <div className="logout-container-navbar">
 
-                    <NavLink to={"/users"} className="button-top-navbar" style={({ isActive }) => { return { fontWeight: isActive ? "bold" : "" } }}>{user.email}</NavLink>
+                    <NavLink to={"/"} className="button-top-navbar" style={({ isActive }) => { return { fontWeight: isActive ? "bold" : "" } }}>{user.first_name} {user.last_name}</NavLink>
                     <button onClick={logout}>Cerrar sesión</button>
 
                 </div>}

@@ -42,7 +42,7 @@ export default function Forgot() {
     return (
             <div className="cuenta-registrarse">
                 <h2 className="cuenta-title">Restaurar contraseña:</h2>
-                <p className="info-text-register">Recuerda que tu contraseña debe tener 6 carácteres alfanuméricos SIN símbolos.</p>
+                <p className="info-text-register">Recuerda que tu contraseña debe tener 8 carácteres alfanuméricos SIN símbolos.</p>
                 <form className="login-form"  onSubmit={handleSubmit(forgot)}>
                     <input type="text" id="id" name="id" value={uid} disabled {...register("id", { required: true })} />
                     <input type="password" id="password" name="password" placeholder="Contraseña nueva *" maxLength="8" pattern="[A-Za-z0-9]{8,8}" {...register("password", { required: true })} />

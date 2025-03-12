@@ -5,9 +5,12 @@ import axios from "../../config/axiosConfig";
 import { toast } from 'react-toastify';
 
 const urlEvents = "events/"
+const urlGetFeaturesPositions = "utils/openclosefeatures"
+const urlUpdateFeaturesPositions = "utils/openclosefeatures/"
 
 export default function SystemEvents() {
     const [events, setEvents] = useState([]);
+    const [featurePosition, setFeaturePosition] = useState(0);
 
     const {
         register,
@@ -16,6 +19,29 @@ export default function SystemEvents() {
     } = useForm({
         mode: "onBlur",
     });
+
+    function openCloseFeatures(fid, position) {
+        const pos = position ? 0 : 1;
+        axios.put(urlUpdateFeaturesPositions + fid + "/" + pos)
+            .then(response => {
+                setFeaturePosition(pos);
+            })
+            .catch(error => {
+                toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+                console.log(error)
+            })
+    }
+
+    function fetchPositions() {
+        axios.get(urlGetFeaturesPositions)
+            .then(response => {
+                setFeaturePosition(response.data[1].feature);
+            })
+            .catch(error => {
+                toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+                console.log(error)
+            })
+    }
 
     function fetchEvents() {
         axios.get(urlEvents, { withCredentials: true })
@@ -30,6 +56,7 @@ export default function SystemEvents() {
 
     useEffect(() => {
         fetchEvents();
+        fetchPositions();
     }, []);
 
     function deleteEvent(eid) {
@@ -63,64 +90,68 @@ export default function SystemEvents() {
     }
 
     return (
-            <div className="sistema-container">
-                <h1>Crear eventos:</h1>
+        <div className="sistema-container">
 
-                <div className="altas">
-                    <form onSubmit={handleSubmit(newEvent)} className="checkout-form">
-                        <input type="date" name="event_date" placeholder="Fecha del evento *" {...register("event_date", { required: true })} />
-                        <input type="text" name="event_name" placeholder="Nombre del evento *" {...register("event_name", { required: true })} />
-                        <input type="text" name="event_description" placeholder="Descripción *" {...register("event_description", { required: true })} />
-                        <input type="number" name="inscription_price" placeholder="Precio de inscripción *" min={"0"} defaultValue={"0"} {...register("inscription_price")} />
+            {featurePosition ? <button className="is_open" onClick={() => { openCloseFeatures(2, featurePosition) }}>Eventos habilitados</button> :
+                <button className="is_closed" onClick={() => { openCloseFeatures(2, featurePosition) }}>Eventos deshabilitados</button>}
 
-                        <div className="sistema-bajas-modif-botones">
-                            <button type="submit" className="cuenta-button">Registrar evento</button>
-                            <button type="reset" className="boton-quitar-carrito" onClick={reset}>Reset</button>
-                        </div>
-                    </form>
-                </div>
+            <h1>Crear eventos:</h1>
 
-                <div className="bajas-modif-main">
+            <div className="altas">
+                <form onSubmit={handleSubmit(newEvent)} className="checkout-form">
+                    <input type="date" name="event_date" placeholder="Fecha del evento *" {...register("event_date", { required: true })} />
+                    <input type="text" name="event_name" placeholder="Nombre del evento *" {...register("event_name", { required: true })} />
+                    <input type="text" name="event_description" placeholder="Descripción *" {...register("event_description", { required: true })} />
+                    <input type="number" name="inscription_price" placeholder="Precio de inscripción *" min={"0"} defaultValue={"0"} {...register("inscription_price")} />
 
-                    {
-                        !events.length ?
-
-                            <p className="text-info">No se encontraron eventos</p> :
-                            <>
-                                <h2>Listado de eventos:</h2>
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Fecha publicación</th>
-                                            <th>Fecha Evento</th>
-                                            <th>Nombre</th>
-                                            <th>Decripción</th>
-                                            <th>Precio</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-
-                                        {
-                                            events.map((event) => (
-                                                <tr key={event.id_event}>
-                                                    <th>{event.publication_date.slice(0, -14)}</th>
-                                                    <th>{event.event_date.slice(0, -14)}</th>
-                                                    <th>{event.event_name}</th>
-                                                    <th>{event.event_description}</th>
-                                                    <th>{event.inscription_price}</th>
-                                                    <th className="edit-event-buttons-container"> <button className="delete-event-button" onClick={() => { deleteEvent(event.id_event) }}>Borrar</button>
-                                                        {<NavLink to={`/updateevent/${event.id_event}`} className="edit-event-button" >Editar</NavLink>}</th>
-                                                </tr>
-                                            ))
-                                        }
-
-                                    </tbody>
-                                </table>
-                            </>
-                    }
-                </div>
-                <NavLink to={"/"} className="info-button" >Volver</NavLink>
+                    <div className="sistema-bajas-modif-botones">
+                        <button type="submit" className="cuenta-button">Registrar evento</button>
+                        <button type="reset" className="boton-quitar-carrito" onClick={reset}>Reset</button>
+                    </div>
+                </form>
             </div>
+
+            <div className="bajas-modif-main">
+
+                {
+                    !events.length ?
+
+                        <p className="text-info">No se encontraron eventos</p> :
+                        <>
+                            <h2>Listado de eventos:</h2>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Fecha publicación</th>
+                                        <th>Fecha Evento</th>
+                                        <th>Nombre</th>
+                                        <th>Decripción</th>
+                                        <th>Precio</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    {
+                                        events.map((event) => (
+                                            <tr key={event.id_event}>
+                                                <th>{new Date(event.publication_date).toLocaleDateString('en-GB')}</th>
+                                                <th>{new Date(event.event_date).toLocaleDateString('en-GB')}</th>
+                                                <th>{event.event_name}</th>
+                                                <th>{event.event_description}</th>
+                                                <th>{event.inscription_price}</th>
+                                                <th className="edit-event-buttons-container"> <button className="delete-event-button" onClick={() => { deleteEvent(event.id_event) }}>Borrar</button>
+                                                    {<NavLink to={`/updateevent/${event.id_event}`} className="edit-event-button" >Editar</NavLink>}</th>
+                                            </tr>
+                                        ))
+                                    }
+
+                                </tbody>
+                            </table>
+                        </>
+                }
+            </div>
+            <NavLink to={"/"} className="info-button" >Volver</NavLink>
+        </div>
     )
 }

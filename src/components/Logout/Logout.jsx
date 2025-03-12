@@ -8,12 +8,12 @@ export default function Logout() {
 
     
     function backToHome() {
-        sessionStorage.clear();
+        localStorage.clear();
         setUser(null);
         navigate("/");
     }
 
-    setTimeout(backToHome, 3000);
+    setTimeout(backToHome, 1000);
 
     return (
         <div className="logout-container">

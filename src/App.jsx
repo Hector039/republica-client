@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { UserProvider } from "./components/context/dataContext";
-import Events from "./components/Events/Events";
+import MasInfo from "./components/MasInfo/MasInfo";
 import Forgot from "./components/Forgot/Forgot";
 import Logout from "./components/Logout/Logout";
 import NavBar from "./components/NavBar/NavBar";
@@ -22,18 +22,19 @@ import Footer from "./components/Footer/Footer";
 import Fees from "./components/Fees/Fees";
 import Daily from "./components/Daily/Daily";
 import Expenditures from "./components/Expenditures/Expenditures";
+import DebtorPaymentsHistory from "./components/System/DebtorPaymentsHistory";
 
 export default function App() {
 
   return (
     <UserProvider>
-      <BrowserRouter >
+      <BrowserRouter basename="/">
       <NavBar/>
         <Routes>
-          <Route exact path={"/"} element={<Events />} />
+          <Route exact path={"/"} element={<Users />} />
+          <Route exact path={"/masinfo"} element={<MasInfo />} />
           <Route exact path={"/updatemerchrequest/:mid"} element={<UpdateMerchRequest />} />
-          <Route exact path={"/users"} element={<Users />} />
-          <Route exact path={"/updateuser/:uid"} element={<UpdateUser />} />
+          <Route exact path={"/updateuser"} element={<UpdateUser />} />
           <Route exact path={"/forgot/:uid"} element={<Forgot />} />
           <Route exact path={"/passrestoration"} element={<PassRestoration />} />
           <Route exact path={"/logout"} element={<Logout />} />
@@ -48,7 +49,8 @@ export default function App() {
           <Route exact path={"/expenditures"} element={<Expenditures />} />
           <Route exact path={"/daily"} element={<Daily />} />
           <Route exact path={"/administrationdebtors"} element={<SystemDebtors />} />
-          <Route exact path={"/userpaymentshistory/"} element={<UserPaymentsHistory />} />
+          <Route exact path={"/userpaymentshistory"} element={<UserPaymentsHistory />} />
+          <Route exact path={"/debtorpaymentshistory/:uid"} element={<DebtorPaymentsHistory />} />
 
           <Route exact path={"/adminnotifications"} element={<AdminNotifications />} />
         </Routes>

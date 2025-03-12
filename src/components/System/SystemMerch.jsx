@@ -9,11 +9,27 @@ const date = new Date();
 
 const urlMerchRequests = "merchrequests/"
 const urlMarkPaidMerchRequests = "merchrequests/updatepaymentstatus/"
+const urlPartialPayMerchRequest = "merchrequests/addmerchpayment/"
 const urlUpdateNewMerchRequests = "merchrequests/updatenewrequests"
+const urlGetFeaturesPositions = "utils/openclosefeatures"
+const urlUpdateFeaturesPositions = "utils/openclosefeatures/"
 
 export default function SystemMerch() {
     const [merchRequests, setMerchReq] = useState([])
     const [amounts, setAmounts] = useState({});
+    const [featurePosition, setFeaturePosition] = useState(0);
+
+    function openCloseFeatures(fid, position) {
+        const pos = position ? 0 : 1;
+        axios.put(urlUpdateFeaturesPositions + fid + "/" + pos)
+            .then(response => {
+                setFeaturePosition(pos);
+            })
+            .catch(error => {
+                toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+                console.log(error)
+            })
+    }
 
     function fetchMerch() {
         axios.get(urlMerchRequests, { withCredentials: true })
@@ -26,8 +42,20 @@ export default function SystemMerch() {
             })
     }
 
+    function fetchPositions() {
+        axios.get(urlGetFeaturesPositions)
+            .then(response => {
+                setFeaturePosition(response.data[0].feature);
+            })
+            .catch(error => {
+                toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+                console.log(error)
+            })
+    }
+
     useEffect(() => {
         fetchMerch();
+        fetchPositions();
     }, []);
 
 
@@ -55,7 +83,7 @@ export default function SystemMerch() {
             })
     }
 
-    function markPaidMerchRequest(mid) {
+    function payPartialMerchRequest(mid) {
         const payDate = date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate())
         const amount = amounts[mid] || "";
 
@@ -64,11 +92,24 @@ export default function SystemMerch() {
             return;
         }
 
-        axios.put(urlMarkPaidMerchRequests, { mid: mid, payDate: payDate, amount: amount }, { withCredentials: true })
+        axios.post(urlPartialPayMerchRequest, { mid: mid, payDate: payDate, amount: amount }, { withCredentials: true })
             .then(response => {
-                toast.success('Se registró el pago correctamente.');
+                toast.success('Se registró el pago parcial.');
                 fetchMerch();
                 setAmounts(prev => ({ ...prev, [mid]: "" }));
+            })
+            .catch(error => {
+                toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+                console.log(error)
+            })
+    }
+
+    function markPaidMerchRequest(mid) {
+        const payDate = date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate())
+        axios.put(urlMarkPaidMerchRequests, { mid: mid, payDate: payDate }, { withCredentials: true })
+            .then(response => {
+                toast.success('Se saldó la solicitud.');
+                fetchMerch();
             })
             .catch(error => {
                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');
@@ -93,7 +134,10 @@ export default function SystemMerch() {
 
     return (
         <div className="system_incs_container">
-            <h2>Historial de solicitudes de encargues:</h2>
+            {featurePosition ? <button className="is_open" onClick={() => { openCloseFeatures(1, featurePosition) }}>Solicitudes habilitadas</button> : 
+            <button className="is_closed" onClick={() => { openCloseFeatures(1, featurePosition) }}>Solicitudes deshabilitadas</button>}
+
+            <h1>Historial de solicitudes de encargues:</h1>
             {merchRequests.length != 0 ?
                 <div className="table_container">
                     <button className="boton-quitar-carrito" onClick={handleDownloadExcel}>Exportar</button>
@@ -103,12 +147,11 @@ export default function SystemMerch() {
                             <tr>
                                 <th>Nombre</th>
                                 <th>Apellido</th>
-                                <th>Teléfono de contacto</th>
-                                <th>Fecha</th>
-                                <th>Talle</th>
-                                <th>Cantidad</th>
+                                <th>Teléfono</th>
+                                <th>Fecha Solicitud</th>
                                 <th>Descripción</th>
-                                <th>Pagado</th>
+                                <th>Estado</th>
+                                <th>Saldo Actual</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -120,13 +163,13 @@ export default function SystemMerch() {
                                         <th>{merchReq.first_name}</th>
                                         <th>{merchReq.last_name}</th>
                                         <th>{merchReq.tel_contact}</th>
-                                        <th>{merchReq.req_date.slice(0, -14)}</th>
-                                        <th>{merchReq.size}</th>
-                                        <th>{merchReq.quantity}</th>
+                                        <th>{new Date(merchReq.req_date).toLocaleDateString('en-GB')}</th>
                                         <th>{merchReq.req_description}</th>
-                                        <th>{merchReq.pay_date ? "SI" : "NO"}</th>
+                                        <th>{merchReq.pay_date ? "PAGÓ" : "PENDIENTE"}</th>
+                                        <th>{merchReq.pay_date ? "---" : merchReq.amount}</th>
                                         <th className="edit-event-buttons-container">
                                             {!merchReq.pay_date && (
+                                                <>
                                                 <div className="merch-input-container">
                                                     <input
                                                         className="merch-input"
@@ -144,14 +187,10 @@ export default function SystemMerch() {
                                                             }))
                                                         }
                                                     />
-                                                    <button
-                                                        type="button"
-                                                        className="merch-button"
-                                                        onClick={() => markPaidMerchRequest(merchReq.id_request)}
-                                                    >
-                                                        Registrar pago
-                                                    </button>
+                                                    <button type="button" className="merch-button" onClick={() => payPartialMerchRequest(merchReq.id_request)} > Registrar parcial </button>
                                                 </div>
+                                            <button type="button" className="merch-button" onClick={() => markPaidMerchRequest(merchReq.id_request)} > Saldar </button>
+                                            </>
                                             )}
                                             <button className="delete-event-button" onClick={() => { deleteMerchRequest(merchReq.id_request) }}>Borrar</button></th>
                                     </tr>

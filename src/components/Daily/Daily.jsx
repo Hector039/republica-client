@@ -285,7 +285,7 @@ export default function Daily() {
 
                             {
                                 requestsInfo.map((merch) => (
-                                    <tr key={merch.id_request}>
+                                    <tr key={merch.id_req_payment}>
                                         <th>{merch.registros}</th>
                                         <th>{merch.total}</th>
                                         <th></th>

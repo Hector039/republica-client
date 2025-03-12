@@ -1,12 +1,12 @@
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useEffect/* , useState */ } from "react";
 import { useUser } from "../context/dataContext";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import axios from "../../config/axiosConfig";
 import Swal from "sweetalert2";
 import withReactContent from 'sweetalert2-react-content'
 import { toast } from 'react-toastify';
-import { QRCodeSVG } from "qrcode.react";
+//import { QRCodeSVG } from "qrcode.react";
 
 const MySwal = withReactContent(Swal)
 
@@ -14,28 +14,12 @@ const urlUserLogin = "users/login"
 const urlUser = "users/"
 const urlUserRegister = "users/signin"
 const urlAdminNotifications = "utils/notifications"
-const urlGetQr = "utils/getqr"
+//const urlGetQr = "utils/getqr"
 
 export default function Users() {
     const navigate = useNavigate();
     const { user, setUser } = useUser();
-    const [qr, setQr] = useState(null)
-
-    useEffect(() => {
-        function axiosData() {
-            if (sessionStorage.getItem("temp")) {
-                axios.get(urlUser + sessionStorage.getItem("temp"), { withCredentials: true })
-                    .then(response => {
-                        setUser(response.data);
-                    })
-                    .catch(error => {
-                        console.log(error);
-                        toast.error('Ocurrió un error inesperado. Intenta de nuevo');
-                    })
-            }
-        }
-        axiosData();
-    }, [])
+    //const [qr, setQr] = useState(null)
 
     const {
         register,
@@ -46,24 +30,37 @@ export default function Users() {
 
     const {
         register: register2,
-        handleSubmit: handleSubmit2,
-        formState: { isSubmitSuccessful }
+        handleSubmit: handleSubmit2
     } = useForm({
         mode: "onBlur",
     });
+
+    useEffect(() => {
+        function axiosData() {
+            axios.get(urlUser, { withCredentials: true })
+                .then(response => {
+                    setUser(response.data);
+                })
+                .catch(error => {
+                    console.log(error);
+                    toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+                })
+        }
+        axiosData();
+
+    }, [])
 
     const login = (e) => {
         axios.post(urlUserLogin, { dni: e.dni, password: e.password }, { withCredentials: true })
             .then(response => {
                 Swal.fire({
-                    position: "top-end",
                     icon: "success",
                     title: "Login correcto!",
                     showConfirmButton: false,
                     timer: 1500
                 });
 
-                sessionStorage.setItem("temp", response.data.id_user);
+                localStorage.setItem("temp", response.data.token);
                 setUser(response.data);
                 if (response.data.is_admin) {
                     axios.get(urlAdminNotifications, { withCredentials: true })
@@ -124,7 +121,7 @@ export default function Users() {
                     title: `Bienvenida/o ${response.data.last_name}!`,
                     showConfirmButton: true
                 }).then(resp => {
-                    sessionStorage.setItem("temp", response.data.id_user);
+                    localStorage.setItem("temp", response.data.token);
                     setUser(response.data);
                     navigate("/");
                 })
@@ -135,7 +132,7 @@ export default function Users() {
                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');
             })
     }
-
+/* 
     const getQr = () => {
         console.log("enviando");
 
@@ -147,17 +144,17 @@ export default function Users() {
                 console.log(error);
                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');
             })
-
     }
-
+ */
     return (
-        <div className="cuenta-main">
             <section className="cuenta-info">
                 {
                     !user ?
                         <>
+                        <h1>* BIENVENIDOS a Gimnasia Deportiva de la Vecinal Republica del Oeste 🤸‍♀ *</h1>
+                        <h3>Por favor, regístrese creando una cuenta a nombre de su hijo/a gimnasta. Esto nos permitirá establecer una comunicación más fluida sobre pagos, eventos, encargues y otros temas referidos a la dinámica del gimnasio.</h3>
                             <div className="cuenta-registrarse">
-                                <h2 >Acceder usuario existente:</h2>
+                                <h4 >Acceder usuario existente:</h4>
                                 <form className="login-form" onSubmit={handleSubmit(login)}>
                                     <input type="text" name="dni" placeholder="DNI *" inputMode="numeric" pattern="\d*" maxLength="8" minLength="8" title="Solo números. 8 dígitos."  {...register("dni", { required: true })} />
                                     <input type="password" id="login-password" name="password" placeholder="Contraseña *" maxLength="8" pattern="[A-Za-z0-9]{8,8}" {...register("password", { required: true })} />
@@ -168,13 +165,13 @@ export default function Users() {
 
 
                             <div className="cuenta-registrarse">
-                                <h2 >Registrar cuenta nueva:</h2>
+                                <h4 >Registrar cuenta nueva:</h4>
                                 <form className="login-form" onSubmit={handleSubmit2(newRegister)}>
-                                    <input type="text" id="first_name" name="first_name" placeholder="Nombre *" maxLength="15" pattern="[A-Za-zÀ-ÿ\u00f1\u00d1]{3,15}" title="No uses símbolos ni números. Min 3, Max 15 carácteres." {...register2("first_name", { required: true })} />
-                                    <input type="text" id="last_name" name="last_name" placeholder="Apellido *" maxLength="15" pattern="[A-Za-zÀ-ÿ\u00f1\u00d1]{3,15}" title="No uses símbolos ni números. Min 3, Max 15 carácteres." {...register2("last_name", { required: true })} />
+                                    <input type="text" id="first_name" name="first_name" placeholder="Nombre *" maxLength="30" pattern="^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]{3,30}$" title="No uses símbolos ni números. Min 3, Max 30 carácteres." {...register2("first_name", { required: true })} />
+                                    <input type="text" id="last_name" name="last_name" placeholder="Apellido *" maxLength="30" pattern="^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]{3,30}$" title="No uses símbolos ni números. Min 3, Max 30 carácteres." {...register2("last_name", { required: true })} />
                                     <input type="email" id="email" name="email" placeholder="Correo Electrónico" {...register2("email")} />
 
-                                    <p className="info-text-register">Recuerda que tu contraseña debe tener 6 carácteres alfanuméricos SIN símbolos.</p>
+                                    <p className="info-text-register">Recuerda que tu contraseña debe tener 8 carácteres alfanuméricos SIN símbolos.</p>
                                     <input type="password" id="password" name="password" placeholder="Contraseña nueva *" maxLength="8" pattern="[A-Za-z0-9]{8,8}" {...register2("password", { required: true })} />
                                     <input type="password" id="repassword" name="repassword" placeholder="Repite la contraseña nueva *" maxLength="8" pattern="[A-Za-z0-9]{8,8}" {...register2("repassword", { required: true })} />
                                     <input type="date" id="birth_date" name="birth_date" placeholder="Fecha nacimiento *" {...register2("birth_date", { required: true })} />
@@ -196,29 +193,27 @@ export default function Users() {
                             </div>
                         </> :
                         <div className="user-info-container">
-                            <h2>Información de cuenta:</h2>
+                            <h1>Bienvenida/o {user.first_name}!</h1>
 
                             <div className="user-info">
                                 <p>Nombre completo: {user.first_name} {user.last_name}</p>
-                                <p>E-Mail: {user.email}</p>
-                                <p>Fecha de nacimiento: {user.birth_date.slice(0, -14)}</p>
+                                <p>E-Mail: {user.email ? user.email : "Sin dato"}</p>
+                                <p>Fecha de nacimiento: {new Date(user.birth_date).toLocaleDateString('en-GB')}</p>
                                 <p>DNI: {user.dni}</p>
                                 <p>Teléfono de contacto: {user.tel_contact}</p>
-                                <p>Fecha de registro: {user.register_date.slice(0, -14)}</p>
+                                <p>Fecha de registro: {new Date(user.register_date).toLocaleDateString('en-GB')}</p>
                             </div>
                             <div className="user-info-buttons">
-                                <NavLink to={`/updateuser/${user.id_user}`} className="cuenta-button" style={({ isActive }) => { return { fontWeight: isActive ? "bold" : "" } }}>Actualizar datos</NavLink>
-                                <NavLink to={`/userpaymentshistory/`} className="cuenta-button" style={({ isActive }) => { return { fontWeight: isActive ? "bold" : "" } }}>Historial de pagos</NavLink>
+                                <NavLink to={`/updateuser`} className="cuenta-button" style={({ isActive }) => { return { fontWeight: isActive ? "bold" : "" } }}>Mi cuenta</NavLink>
+                                <NavLink to={`/masinfo`} className="cuenta-button" style={({ isActive }) => { return { fontWeight: isActive ? "bold" : "" } }}>Más info</NavLink>
                             </div>
 
-                            <div className="qr-container">
+                            {/* <div className="qr-container">
                                 {user.is_admin == 1 && <button className="boton-quitar-carrito" onClick={() => { getQr() }}>Iniciar WhatsApp</button>}
                                 {qr != null && (qr ? <QRCodeSVG size={"256"} value={qr} /> : <p>Cargando QR...</p>)}
-                            </div>
+                            </div> */}
                         </div>
                 }
             </section>
-            <Link to={"/"} className="info-button">Volver</Link>
-        </div>
     )
 }

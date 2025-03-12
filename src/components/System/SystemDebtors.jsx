@@ -167,11 +167,10 @@ export default function SystemDebtors() {
                             <tr>
                                 <th>Nombre</th>
                                 <th>Apellido</th>
-                                <th>Email</th>
                                 <th>Teléfono</th>
                                 <th>Estado</th>
                                 <th>Historial pagos</th>
-                                <th></th>
+                               {/*  <th></th> */}
                             </tr>
                         </thead>
                         <tbody>
@@ -181,22 +180,21 @@ export default function SystemDebtors() {
                                     <tr key={user.id_user}>
                                         <th>{user.first_name}</th>
                                         <th>{user.last_name}</th>
-                                        <th>{user.email}</th>
                                         <th>{user.tel_contact}</th>
                                         <th><select {...register2(`status_${user.id_user}`)} value={user.user_status.toString()}
                                             onChange={e => { changeUserStatus(e.target.value, user.id_user) }} >
                                             <option value="1">Activo</option>
                                             <option value="0">Inactivo</option>
                                         </select></th>
-                                        <th><NavLink to={`/userpaymentshistory/`} className="info-button">Ver</NavLink></th>
-                                        <th>{(selectorChanger === "monthly_payments" || selectorChanger === "annual_payments") && <button className="boton-quitar-carrito" onClick={() => { notifyDebtor(user.id_user, dateChanger) }}>Notificar</button>}</th>
+                                        <th><NavLink to={`/debtorpaymentshistory/${user.id_user}`} className="info-button">Ver</NavLink></th>
+                                       {/*  <th>{(selectorChanger === "monthly_payments" || selectorChanger === "annual_payments") && <button className="boton-quitar-carrito" onClick={() => { notifyDebtor(user.id_user, dateChanger) }}>Notificar</button>}</th> */}
                                     </tr>
                                 ))
                             }
 
                         </tbody>
                     </table>
-                    {(selectorChanger === "monthly_payments" || selectorChanger === "annual_payments") && <button className="boton-quitar-carrito" onClick={() => { notifyAllDebtors(debtorsUsers, dateChanger) }}>Notificar todos</button>}
+                    {/* {(selectorChanger === "monthly_payments" || selectorChanger === "annual_payments") && <button className="boton-quitar-carrito" onClick={() => { notifyAllDebtors(debtorsUsers, dateChanger) }}>Notificar todos</button>} */}
                 </div>
 
 

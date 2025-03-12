@@ -55,7 +55,7 @@ export default function Expenditures() {
                         {
                             expenditures.map((exp) => (
                                 <tr key={exp.id_exp}>
-                                    <th>{exp.pay_date.slice(0, -14)}</th>
+                                    <th>{new Date(exp.pay_date).toLocaleDateString('en-GB')}</th>
                                     <th>{exp.descr}</th>
                                     <th>{exp.amount}</th>
                                 </tr>

@@ -30,16 +30,23 @@ body {
   background: #f4f4f4;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 40px
 }
 
 h1,
-h2 {
+h2, h4 {
   color: rgb(83, 39, 178);
   text-align: center;
 }
 
-h2{
-  margin-bottom: 30px;
+h3{
+  margin-inline: 300px;
+}
+
+h5{
+  font-size: 1.1em;
+  font-weight: 600;
+  margin-right: auto;
 }
 
 .cuenta-info {
@@ -47,6 +54,7 @@ h2{
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 40px;
 }
 
 .login-form {
@@ -91,6 +99,7 @@ input {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  gap: 40px;
 }
 
 .update_user_container{
@@ -259,7 +268,6 @@ input {
 .edit-event-buttons-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
 }
 
 .mark-paid-button {
@@ -600,8 +608,6 @@ input {
 .fees_form {
   display: flex;
   flex-direction: row;
-  width: 400px;
-  gap: 5px;
   padding-block: 0px;
 }
 
@@ -655,6 +661,7 @@ tr:nth-child(even) {
 }
 
 .table-buttons {
+  width: 90px;
   background: rgb(189, 36, 186);
   color: white;
   border: none;
@@ -671,7 +678,8 @@ tr:nth-child(even) {
 
 .table-buttons-container {
   display: flex;
-  gap: 10px;
+  align-items: center;
+  justify-content: space-evenly;
 }
 
 form {
@@ -715,6 +723,9 @@ select {
 
 .products-container {
   margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .table_balance {
@@ -746,6 +757,8 @@ select {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 .sistema-container {
@@ -758,6 +771,32 @@ select {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.is_open{
+  padding: 10px;
+  background: rgb(81, 255, 0);
+  color: rgb(0, 0, 0);
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+  align-self: center;
+  margin-bottom: 40px;
+}
+
+.is_closed{
+  padding: 10px;
+  background: rgb(255, 94, 0);
+  color: rgb(0, 0, 0);
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+  align-self: center;
+  margin-bottom: 40px;
 }
 
 

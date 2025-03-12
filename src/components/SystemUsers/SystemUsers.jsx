@@ -76,7 +76,7 @@ export default function SystemUsers() {
                 toast.success('Se cambió la tarifa del usuario.');
                 setUsers(prevUsers =>
                     prevUsers.map(user =>
-                        user.id_user === uid ? { ...user, fee: newFee } : user
+                        user.id_user === uid ? { ...user, id_fee: newFee } : user
                     )
                 );
             })
@@ -163,16 +163,16 @@ export default function SystemUsers() {
                                         <tr key={user.id_user}>
                                             <th>{user.first_name}</th>
                                             <th>{user.last_name}</th>
-                                            <th>{user.birth_date.slice(0, -14)}</th>
+                                            <th>{new Date(user.birth_date).toLocaleDateString('en-GB')}</th>
                                             <th>{user.dni}</th>
                                             <th>{user.tel_contact}</th>
-                                            <th>{user.register_date.slice(0, -14)}</th>
+                                            <th>{new Date(user.register_date).toLocaleDateString('en-GB')}</th>
                                             <th><select {...register2(`status_${user.id_user}`)} value={user.user_status.toString()}
                                                 onChange={e => { changeUserStatus(e.target.value, user.id_user) }} >
                                                 <option value="1">Activo</option>
                                                 <option value="0">Inactivo</option>
                                             </select></th>
-                                            <th><select {...register3(`userFee_${user.id_user}`)} value={user.id_fee}
+                                            <th><select {...register3(`userFee_${user.id_user}`)} value={user.id_fee.toString()}
                                                 onChange={e => { changeUserFee(e.target.value, user.id_user) }}>
                                                 <option value="1">Escuelita</option>
                                                 <option value="2">Esc Hnos x2</option>

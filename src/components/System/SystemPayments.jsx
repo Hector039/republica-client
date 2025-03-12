@@ -151,7 +151,7 @@ export default function SystemPayments() {
                                         <th>{user.first_name}</th>
                                         <th>{user.last_name}</th>
                                         <th>{user.dni}</th>
-                                        <th>{user.register_date.slice(0, -14)}</th>
+                                        <th>{new Date(user.register_date).toLocaleDateString('en-GB')}</th>
                                         <th>{user.user_status ? "ACTIVO" : "INACTIVO"}</th>
                                         <th>{user.id_fee}</th>
                                         <th><form onSubmit={e => handleSubmit2(e, user.id_user)} >

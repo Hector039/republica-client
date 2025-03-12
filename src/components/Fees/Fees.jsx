@@ -67,7 +67,7 @@ export default function Fees() {
                                 fees.map((fee) => (
                                     <form className="fees_form" key={fee.id_fee} onSubmit={e => handleSubmit2(e, fee.id_fee)}>
 
-                                        <h3>{fee.fee_descr}</h3>
+                                        <h5>{fee.fee_descr}</h5>
                                         <input type="number" name={`amount_${fee.id_fee}`} min={"0"} defaultValue={fee.amount} {...register(`amount_${fee.id_fee}`)} />
                                         <button type="submit" className="delete-event-button">Modificar</button>
 

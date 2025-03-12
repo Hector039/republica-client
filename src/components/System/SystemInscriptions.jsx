@@ -79,7 +79,7 @@ export default function SystemInscriptions() {
 
     return (
         <div className="system_incs_container">
-            <h2>Historial de solicitudes de inscripción:</h2>
+            <h1>Historial de solicitudes de inscripción:</h1>
             {inscriptionsReq.length != 0 ?
                 <div className="table_container">
                 <button className="boton-quitar-carrito" onClick={handleDownloadExcel}>Exportar</button>

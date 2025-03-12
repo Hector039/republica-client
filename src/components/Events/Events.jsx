@@ -200,7 +200,7 @@ export default function Events() {
                                         <th>{request.req_description}</th>
                                         <th>{request.pay_date ? "PAGADA" : "PENDIENTE"}</th>
                                         <th ><div className="table-buttons-container">{user != null && !user.is_admin && <>
-                                            <NavLink to={`/updatemerchrequest/${request.id_request}`} className="cuenta-button">Editar</NavLink>
+                                            <NavLink to={`/updatemerchrequest/${request.id_request}`} className="table-buttons">Editar</NavLink>
                                             <button className="table-buttons" onClick={() => { deleteUserMerchReq(request.id_request) }}>Borrar</button></>}</div></th>
                                     </tr>
                                 ))

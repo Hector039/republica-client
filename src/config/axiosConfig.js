@@ -1,8 +1,25 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-    baseURL: "https://republica-server.onrender.com/api/"
+    baseURL: "https://republica-server.onrender.com/api/",
+    proxy: {
+        host: "localhost",
+        port: 5173
+    }
 });
+
+axiosInstance.interceptors.request.use(
+    function (config) {
+        const token = localStorage.getItem("temp");
+        if (token) {
+            config.headers["Authorization"] = `Bearer ${token}`;
+        }
+        return config;
+    },
+    function (error) {
+        return Promise.reject(error);
+    }
+);
 
 axiosInstance.interceptors.response.use(
     response => response,
