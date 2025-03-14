@@ -217,8 +217,7 @@ export default function MasInfo() {
                                         <th>{new Date(request.req_date).toLocaleDateString('en-GB')}</th>
                                         <th>{request.req_description}</th>
                                         <th>{request.pay_date ? "PAGÓ" : "PENDIENTE"}</th>
-                                        <th>{request.pay_date ? "---" : request.amount}</th>
-
+                                        <th>${request.pay_date ? "---" : request.amount}</th>
                                     </tr>
                                 ))
                             }
@@ -257,9 +256,9 @@ export default function MasInfo() {
                     </table></div>}
 
             <div className="products-container">
-                {events.length != 0 &&
                     <div className="table_container">
-                        <h2>Beneficios</h2>
+                        <h2>Eventos, Inscripciones y Beneficios</h2>
+                {events.length != 0 && (user && featureEventPosition) ? 
                         <table>
                             <thead>
                                 <tr>
@@ -281,14 +280,36 @@ export default function MasInfo() {
                                             <th>{event.event_name}</th>
                                             <th>{event.event_description}</th>
                                             <th>${event.inscription_price}</th>
-                                            <th>{(user && featureEventPosition) ? <button className="boton-quitar-carrito" onClick={() => { sendInscription(event.id_event, user.id_user) }}>Inscribirme</button> :
-                                                <button className="boton-quitar-carrito" disabled>No disponible</button>}</th>
+                                            <th><button className="boton-quitar-carrito" onClick={() => { sendInscription(event.id_event, user.id_user) }}>Inscribirme</button></th>
                                         </tr>
                                     ))
                                 }
                             </tbody>
-                        </table></div>
-                }
+                        </table> : 
+                        <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha de publicación</th>
+                                <th>Fecha del evento</th>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Precio inscripción</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                    <tr >
+                                        <th>dd/mm/aaaa</th>
+                                        <th>dd/mm/aaaa</th>
+                                        <th>próximamente</th>
+                                        <th>xxxxxxxxxxxx</th>
+                                        <th>$xxxxxx</th>
+                                        <th><button className="boton-quitar-carrito" disabled>No disponible</button></th>
+                                    </tr>
+                        </tbody>
+                    </table>
+                    }
+                        </div>
             <NavLink to={"/"} className="info-button">Volver</NavLink>
             </div>
 

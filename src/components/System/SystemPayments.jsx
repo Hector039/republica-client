@@ -185,10 +185,10 @@ export default function SystemPayments() {
                 <button type="submit" className="cuenta-button">Ingresar egreso</button>
             </form>
 
-            <NavLink to={`/administrationdebtors`} className="get-debtors-button">Consultar deudores activos</NavLink>
-            <NavLink to={`/fees`} className="get-debtors-button">Tarifario</NavLink>
             <NavLink to={`/daily`} className="get-debtors-button">Consultar caja diaria</NavLink>
             <NavLink to={`/expenditures`} className="get-debtors-button">Consultar egresos mensuales</NavLink>
+            <NavLink to={`/administrationdebtors`} className="get-debtors-button">Consultar deudores activos</NavLink>
+            <NavLink to={`/fees`} className="get-debtors-button">Tarifario</NavLink>
             <NavLink to={`/`} className="info-button">Volver</NavLink>
 
 

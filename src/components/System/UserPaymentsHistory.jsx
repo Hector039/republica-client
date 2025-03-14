@@ -154,6 +154,7 @@ export default function UserPaymentsHistory() {
                                 <th>Fecha solicitud</th>
                                 <th>Descripción</th>
                                 <th>Fecha del pago</th>
+                                <th>Total saldo</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -164,6 +165,7 @@ export default function UserPaymentsHistory() {
                                         <th>{new Date(merch.req_date).toLocaleDateString('en-GB')}</th>
                                         <th>{merch.req_description}</th>
                                         <th>{new Date(merch.pay_date).toLocaleDateString('en-GB')}</th>
+                                        <th>${merch.amount}</th>
                                     </tr>
                                 ))
                             }

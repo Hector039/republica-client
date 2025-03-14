@@ -17,8 +17,8 @@ export default function Daily() {
 
     const today = date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate()).padStart(2, "0");
 
-    const [totalExpenditures, setTotalExpenditures] = useState(0);
-    const [totalDay, setTotalDay] = useState(0)
+    //const [totalExpenditures, setTotalExpenditures] = useState(0);
+    //const [totalDay, setTotalDay] = useState(0)
 
     const [clubInfo, setClubInfo] = useState([])
     const [monthlyInfo, setMonthlyInfo] = useState([])
@@ -49,7 +49,7 @@ export default function Daily() {
         axios.get(urlDailyMonthlyInfo + day, { withCredentials: true })
             .then(response => {
                 setMonthlyInfo(response.data);
-                updateTotal(response.data)
+                //updateTotal(response.data)
             })
             .catch(error => {
                 console.log(error);
@@ -60,7 +60,7 @@ export default function Daily() {
         axios.get(urlDailyAnnualInfo + day, { withCredentials: true })
             .then(response => {
                 setAnnualInfo(response.data);
-                updateTotal(response.data)
+                //updateTotal(response.data)
             })
             .catch(error => {
                 console.log(error);
@@ -71,7 +71,7 @@ export default function Daily() {
         axios.get(urlDailyInscriptionsInfo + day, { withCredentials: true })
             .then(response => {
                 setInscriptionInfo(response.data);
-                updateTotal(response.data)
+                //updateTotal(response.data)
             })
             .catch(error => {
                 console.log(error);
@@ -82,7 +82,7 @@ export default function Daily() {
         axios.get(urlDailyRequestsInfo + day, { withCredentials: true })
             .then(response => {
                 setRequestsInfo(response.data);
-                updateTotal(response.data)
+                //updateTotal(response.data)
             })
             .catch(error => {
                 console.log(error);
@@ -93,7 +93,7 @@ export default function Daily() {
         axios.get(urlDailyExpendituresInfo + day, { withCredentials: true })
             .then(response => {
                 setExpendituresInfo(response.data);
-                setTotalExpenditures(response.data[0]?.total || 0)
+                //setTotalExpenditures(response.data[0]?.total || 0)
             })
             .catch(error => {
                 console.log(error);
@@ -101,13 +101,13 @@ export default function Daily() {
             })
     }
 
-    function updateTotal(data) {
+    /* function updateTotal(data) {
         const total = data.reduce((acc, item) => acc + parseInt(item.total), 0);
         setTotalDay(prev => prev + total);
-    }
+    } */
 
     function getDayTotalInfo(e) {
-        setTotalDay(0);
+        //setTotalDay(0);
 
         getClubInfo(e.day);
         getMonthlyInfo(e.day);
@@ -126,7 +126,7 @@ export default function Daily() {
                 <button type="submit" className="cuenta-button" >Consultar</button>
             </form>
 
-            { totalDay > 0 &&
+           {/*  { totalDay > 0 &&
             <table className="table_balance">
                 <thead>
                     <tr>
@@ -142,7 +142,7 @@ export default function Daily() {
                         <th>{totalDay - totalExpenditures}</th>
                     </tr>
                 </tbody>
-            </table>}
+            </table>} */}
 
             <h2>Club República:</h2>
             {
