@@ -21,22 +21,19 @@ export default function SystemUsers() {
     });
 
     const {
-        register: register2,
-        handleSubmit: handleSubmit2
+        register: register2
     } = useForm({
         mode: "onBlur",
     });
 
     const {
-        register: register3,
-        handleSubmit: handleSubmit3
+        register: register3
     } = useForm({
         mode: "onBlur",
     });
 
     const {
-        register: register4,
-        handleSubmit: handleSubmit4
+        register: register4
     } = useForm({
         mode: "onBlur",
     });
@@ -125,12 +122,12 @@ export default function SystemUsers() {
             <form onSubmit={handleSubmit(getUsers)} className="checkout-form">
                 <label>Buscar por:
                     <select {...register("search")}>
-                        <option value="TODO" defaultChecked>Todo</option>
+                        <option value="last_name" defaultChecked>Apellido</option>
                         <option value="first_name">Nombre</option>
-                        <option value="last_name">Apellido</option>
                         <option value="dni">DNI</option>
                         <option value="user_group">Grupo</option>
                         <option value="user_status">Estado (0 o 1)</option>
+                        <option value="TODO" >Todo</option>
                     </select>
                 </label>
                 <label>Comienza con:
@@ -167,12 +164,12 @@ export default function SystemUsers() {
                                             <th>{user.dni}</th>
                                             <th>{user.tel_contact}</th>
                                             <th>{new Date(user.register_date).toLocaleDateString('en-GB')}</th>
-                                            <th><select {...register2(`status_${user.id_user}`)} value={user.user_status.toString()}
+                                            <th><select {...register2(`status_${user.id_user}`)} value={user.user_status}
                                                 onChange={e => { changeUserStatus(e.target.value, user.id_user) }} >
                                                 <option value="1">Activo</option>
                                                 <option value="0">Inactivo</option>
                                             </select></th>
-                                            <th><select {...register3(`userFee_${user.id_user}`)} value={user.id_fee.toString()}
+                                            <th><select {...register3(`userFee_${user.id_user}`)} value={String(user.id_fee)}
                                                 onChange={e => { changeUserFee(e.target.value, user.id_user) }}>
                                                 <option value="1">Escuelita</option>
                                                 <option value="2">Esc Hnos x2</option>
@@ -182,20 +179,17 @@ export default function SystemUsers() {
                                                 <option value="6">Comp + Esc</option>
                                                 <option value="7">Amigo</option>
                                             </select></th>
-                                            <th><select {...register4(`newUserGroup_${user.id_user}`)} value={user.user_group.toString()}
+                                            <th><select {...register4(`newUserGroup_${user.id_user}`)} value={String(user.user_group)}
                                                 onChange={e => { changeUserGroup(e.target.value, user.id_user) }}>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
+                                                <option value="1">peques 1</option>
+                                                <option value="2">peques 2</option>
+                                                <option value="3">gimnasia 1</option>
+                                                <option value="4">gimnasia 2</option>
+                                                <option value="5">gimnasia 3</option>
+                                                <option value="6">gimnasia 4</option>
+                                                <option value="7">gimnasia 5</option>
+                                                <option value="8">entrenamiento 1</option>
+                                                <option value="9">entrenamiento 2</option>
                                             </select></th>
                                         </tr>
                                     ))

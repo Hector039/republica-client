@@ -21,8 +21,9 @@ import UserPaymentsHistory from "./components/System/UserPaymentsHistory";
 import Footer from "./components/Footer/Footer";
 import Fees from "./components/Fees/Fees";
 import Daily from "./components/Daily/Daily";
-import Expenditures from "./components/Expenditures/Expenditures";
 import DebtorPaymentsHistory from "./components/System/DebtorPaymentsHistory";
+import Monthly from "./components/Monthly/Monthly";
+import SystemAnnualPayments from "./components/System/SystemAnnualPayments";
 
 export default function App() {
 
@@ -46,8 +47,9 @@ export default function App() {
           <Route exact path={"/administrationinscriptions"} element={<SystemInscriptions />} />
           <Route exact path={"/administrationmerch"} element={<SystemMerch />} />
           <Route exact path={"/administrationpayments"} element={<SystemPayments />} />
-          <Route exact path={"/expenditures"} element={<Expenditures />} />
+          <Route exact path={"/adminannualpayments"} element={<SystemAnnualPayments />} />
           <Route exact path={"/daily"} element={<Daily />} />
+          <Route exact path={"/monthly"} element={<Monthly />} />
           <Route exact path={"/administrationdebtors"} element={<SystemDebtors />} />
           <Route exact path={"/userpaymentshistory"} element={<UserPaymentsHistory />} />
           <Route exact path={"/debtorpaymentshistory/:uid"} element={<DebtorPaymentsHistory />} />

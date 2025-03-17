@@ -78,7 +78,7 @@ export default function Fees() {
                         </>
                     }
                 </div>
-            <NavLink to={"/administrationpayments"} className="info-button" >Volver</NavLink>
+            <NavLink to={"/"} className="info-button" >Volver</NavLink>
             </div>
     )
 }

@@ -109,7 +109,7 @@ export default function UpdateUser() {
                 <input type="number" name="dni" {...register("dni", { required: true })} />
                 <input type="text" name="first_name" maxLength="30" pattern="^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]{3,30}$" title="No uses símbolos ni números. Min 3, Max 30 carácteres." {...register("first_name", { required: true })} />
                 <input type="text" name="last_name" maxLength="30" pattern="^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]{3,30}$" title="No uses símbolos ni números. Min 3, Max 30 carácteres." {...register("last_name", { required: true })} />
-                <input type="email" name="email" {...register("email")} />
+                <input type="email" name="email" placeholder="Email " {...register("email")} />
                 <input type="date" name="birth_date" {...register("birth_date", { required: true })} />
                 <p className="info-text-register">Teléfono ejemplo: 123 1234567</p>
                 <div className="telephone-container">

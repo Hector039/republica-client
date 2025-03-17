@@ -6,9 +6,9 @@ import { toast } from 'react-toastify';
 
 const urlGetDebtors = "monthlypayments/"
 const urlGetAnnualDebtors = "annualpayments/debtorshistory/"
-const urlNotifyAnnualDebtor = "annualpayments/notifydebtor/"
+//const urlNotifyAnnualDebtor = "annualpayments/notifydebtor/"
+//const urlNotifyMonthlyDebtor = "monthlypayments/notifydebtor/"
 const urlChangeStatus = "users/changeuserstatus"
-const urlNotifyMonthlyDebtor = "monthlypayments/notifydebtor/"
 const urlNotifyAllMonthlyDebtors = "monthlypayments/notifyallmonthlydebtors"
 const urlNotifyAllAnnualDebtors = "annualpayments/notifyallannualdebtors"
 const urlGetInscriptionDebtors = "inscriptions/getdebtorshistory/"
@@ -94,7 +94,7 @@ export default function SystemDebtors() {
                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');
             })
     }
-
+/* 
     function notifyDebtor(uid, date) {
         if (selectorChanger === "monthly_payments") {
             axios.get(urlNotifyMonthlyDebtor + uid + "/" + date, { withCredentials: true })
@@ -116,7 +116,7 @@ export default function SystemDebtors() {
                 })
         }
     }
-
+ */
     function notifyAllDebtors(debtorsUsers, date) {
         if (selectorChanger === "monthly_payments") {
             axios.post(urlNotifyAllMonthlyDebtors, { debtorsArray: debtorsUsers, date: date }, { withCredentials: true })
@@ -151,10 +151,10 @@ export default function SystemDebtors() {
             <h1>Consulta de deudores activos:</h1>
             <form onSubmit={handleSubmit(getDebtorsUsers)}>
                 <select {...register("selector")} onChange={handleSelector}>
-                    <option value="monthly_payments" defaultChecked>Mensual</option>
-                    <option value="annual_payments">Matrícula</option>
-                    <option value="merch_requests">Solicitudes</option>
-                    <option value="inscription_requests">Eventos</option>
+                    <option value="monthly_payments" defaultChecked>Cuota</option>
+                    <option value="annual_payments">Matrícula anual</option>
+                    <option value="merch_requests">Solicitudes de indumentaria</option>
+                    <option value="inscription_requests">Inscripciones a eventos</option>
                 </select>
                 <input type="date" id="day" name="day" value={dateChanger}  {...register("day", { required: true })} onChange={handleChange} />
                 <button type="submit" className="cuenta-button" >Consultar</button>
@@ -199,7 +199,7 @@ export default function SystemDebtors() {
 
 
             }
-            <NavLink to={`/administrationpayments`} className="info-button">Volver</NavLink>
+            <NavLink to={`/`} className="info-button">Volver</NavLink>
 
 
         </div>

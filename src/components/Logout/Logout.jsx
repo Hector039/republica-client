@@ -8,7 +8,7 @@ export default function Logout() {
 
     
     function backToHome() {
-        localStorage.clear();
+        sessionStorage.clear();
         setUser(null);
         navigate("/");
     }

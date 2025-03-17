@@ -9,9 +9,11 @@ const date = new Date();
 
 const urlInscriptions = "inscriptions/"
 const urlUpdateNewInscriptionsNewRequests = "inscriptions/updatenewrequests"
+const urlPartialPayInscription = "inscriptions/addinscpayment/"
 
 export default function SystemInscriptions() {
     const [inscriptionsReq, setinscriptionsReq] = useState([]);
+    const [amounts, setAmounts] = useState({});
 
     function fetchInscriptions() {
         axios.get(urlInscriptions, { withCredentials: true })
@@ -51,12 +53,20 @@ export default function SystemInscriptions() {
             })
     }
 
-    function markPaidInscription(iid) {
+    function payPartialInscription(iid) {
         const payDate = date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate())
-        axios.put(urlInscriptions, { iid: iid, payDate: payDate }, { withCredentials: true })
+        const amount = amounts[iid] || "";
+
+        if (!amount) {
+            toast.error("Por favor, ingresa un monto.");
+            return;
+        }
+
+        axios.post(urlPartialPayInscription, { iid: iid, payDate: payDate, amount: amount }, { withCredentials: true })
             .then(response => {
-                toast.success('Se registró la inscripción correctamente.');
+                toast.success('Se registró el pago.');
                 fetchInscriptions();
+                setAmounts(prev => ({ ...prev, [iid]: "" }));
             })
             .catch(error => {
                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');
@@ -94,6 +104,7 @@ export default function SystemInscriptions() {
                                 <th>Precio inscripción</th>
                                 <th>Fecha inscripción</th>
                                 <th>Pagado</th>
+                                <th>Saldo actual</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -106,11 +117,36 @@ export default function SystemInscriptions() {
                                         <th>{inscription.last_name}</th>
                                         <th>{inscription.tel_contact}</th>
                                         <th>{inscription.event_name}</th>
-                                        <th>{inscription.event_date.slice(0, -14)}</th>
+                                        <th>{new Date(inscription.event_date).toLocaleDateString('en-GB')}</th>
                                         <th>{inscription.inscription_price}</th>
-                                        <th>{inscription.inscription_date.slice(0, -14)}</th>
-                                        <th>{inscription.pay_date ? "SI" : "NO"}</th>
-                                        <th className="inscriptions-buttons-container">{!inscription.pay_date && <button className="mark-paid-button" onClick={() => { markPaidInscription(inscription.id_inscription) }}>Registrar pago</button>}
+                                        <th>{new Date(inscription.inscription_date).toLocaleDateString('en-GB')}</th>
+                                        <th>{inscription.pay_date ? "PAGÓ" : "PENDIENTE"}</th>
+                                        <th>{inscription.pay_date ? "---" : inscription.total_amount}</th>
+                                        <th className="edit-event-buttons-container">
+                                        {!inscription.pay_date && (
+                                                <>
+                                                <div className="merch-input-container">
+                                                    <input
+                                                        className="merch-input"
+                                                        type="text"
+                                                        name="amount"
+                                                        placeholder="Monto *"
+                                                        inputMode="numeric"
+                                                        pattern="\d*"
+                                                        title="Solo números."
+                                                        value={amounts[inscription.id_inscription] || ""}
+                                                        onChange={(e) =>
+                                                            setAmounts(prev => ({
+                                                                ...prev,
+                                                                [inscription.id_inscription]: e.target.value
+                                                            }))
+                                                        }
+                                                    />
+                                                    <button type="button" className="merch-button" onClick={() => payPartialInscription(inscription.id_inscription)} > Registrar </button>
+                                                </div>
+                                            
+                                            </>
+                                            )}
                                             <button className="delete-event-button" onClick={() => { deleteInscription(inscription.id_inscription) }}>Borrar</button></th>
                                     </tr>
                                 ))

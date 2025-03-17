@@ -71,7 +71,7 @@ export default function UserPaymentsHistory() {
             <h1>Historial de pagos:</h1>
 
             <section className="cuenta-info">
-                <h2>Mensuales:</h2>
+                <h2>Cuota mensual:</h2>
                 {!monthlyPaymentsHistory.length ? <p className="info-text-register">Sin datos</p> :
 
                     <table>
@@ -97,7 +97,7 @@ export default function UserPaymentsHistory() {
                         </tbody>
 
                     </table>}
-                <h2>Matrículas:</h2>
+                <h2>Matrícula anual:</h2>
                 {!annualPaymentsHistory.length ? <p className="info-text-register">Sin datos</p> :
 
                     <table>
@@ -121,7 +121,7 @@ export default function UserPaymentsHistory() {
                         </tbody>
 
                     </table>}
-                <h2>Eventos:</h2>
+                <h2>Inscripciones a eventos:</h2>
                 {!inscriptionHistory.length ? <p className="info-text-register">Sin datos</p> :
                     <table>
                         <thead>
@@ -146,7 +146,7 @@ export default function UserPaymentsHistory() {
                         </tbody>
 
                     </table>}
-                <h2>Solicitudes:</h2>
+                <h2>Solicitudes de indumentaria:</h2>
                 {!merchHistory.length ? <p className="info-text-register">Sin datos</p> :
                     <table>
                         <thead>

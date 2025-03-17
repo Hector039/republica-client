@@ -149,6 +149,7 @@ export default function MasInfo() {
                 fetchInscr();
             })
             .catch(error => {
+                if (error.response.data.code === 4) return toast.error(error.response.data.message);
                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');
                 console.log(error)
             })

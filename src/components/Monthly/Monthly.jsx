@@ -6,19 +6,20 @@ import { useForm } from "react-hook-form";
 
 const date = new Date();
 
-const urlDailyCLubInfo = "utils/dailyclub/"
-const urlDailyMonthlyInfo = "utils/dailymonthly/"
-const urlDailyAnnualInfo = "utils/dailyannual/"
-const urlDailyInscriptionsInfo = "utils/dailyinscriptions/"
-const urlDailyRequestsInfo = "utils/dailyrequests/"
-const urlDailyExpendituresInfo = "utils/dailyexpenditures/"
+const urlMonthlyCLubInfo = "utils/monthlyclub/"
+const urlMonthlyMonthlyInfo = "utils/monthly/"
+const urlMonthlyAnnualInfo = "utils/monthlyannual/"
+const urlMonthlyInscriptionsInfo = "utils/monthlyinscriptions/"
+const urlMonthlyRequestsInfo = "utils/monthlyrequests/"
+const urlMonthlyExpendituresInfo = "utils/monthlyexpenditures/"
+const urlInfo = "utils/getmonthgridinfo/"
 
-export default function Daily() {
+export default function Monthly() {
 
-    const today = date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate()).padStart(2, "0");
+    const today = date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0");
 
     const [totalExpenditures, setTotalExpenditures] = useState(0);
-    const [totalDay, setTotalDay] = useState(0)
+    const [totalMonth, setTotalMonth] = useState(0)
 
     const [clubInfo, setClubInfo] = useState([])
     const [monthlyInfo, setMonthlyInfo] = useState([])
@@ -26,6 +27,8 @@ export default function Daily() {
     const [inscriptionInfo, setInscriptionInfo] = useState([])
     const [requestsInfo, setRequestsInfo] = useState([])
     const [expendituresInfo, setExpendituresInfo] = useState([])
+    
+    const [info, setInfo] = useState([])
 
     const {
         register,
@@ -34,9 +37,20 @@ export default function Daily() {
         mode: "onBlur",
     });
 
+    function getInfo(month) {
+        axios.get(urlInfo + month)
+            .then(response => {
+                setInfo(response.data);
+            })
+            .catch(error => {
+                console.log(error);
+                toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+            })
+    }
 
-    function getClubInfo(day) {
-        axios.get(urlDailyCLubInfo + day, { withCredentials: true })
+
+    function getClubInfo(month) {
+        axios.get(urlMonthlyCLubInfo + month, { withCredentials: true })
             .then(response => {
                 setClubInfo(response.data);
             })
@@ -45,8 +59,8 @@ export default function Daily() {
                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');
             })
     }
-    function getMonthlyInfo(day) {
-        axios.get(urlDailyMonthlyInfo + day, { withCredentials: true })
+    function getMonthlyInfo(month) {
+        axios.get(urlMonthlyMonthlyInfo + month, { withCredentials: true })
             .then(response => {
                 setMonthlyInfo(response.data);
                 updateTotal(response.data)
@@ -56,8 +70,8 @@ export default function Daily() {
                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');
             })
     }
-    function getAnnualInfo(day) {
-        axios.get(urlDailyAnnualInfo + day, { withCredentials: true })
+    function getAnnualInfo(month) {
+        axios.get(urlMonthlyAnnualInfo + month, { withCredentials: true })
             .then(response => {
                 setAnnualInfo(response.data);
                 updateTotal(response.data)
@@ -67,30 +81,28 @@ export default function Daily() {
                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');
             })
     }
-    function getInscriptionInfo(day) {
-        axios.get(urlDailyInscriptionsInfo + day, { withCredentials: true })
+    function getInscriptionInfo(month) {
+        axios.get(urlMonthlyInscriptionsInfo + month, { withCredentials: true })
             .then(response => {
                 setInscriptionInfo(response.data);
-                //updateTotal(response.data)
             })
             .catch(error => {
                 console.log(error);
                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');
             })
     }
-    function getRequestsInfo(day) {
-        axios.get(urlDailyRequestsInfo + day, { withCredentials: true })
+    function getRequestsInfo(month) {
+        axios.get(urlMonthlyRequestsInfo + month, { withCredentials: true })
             .then(response => {
                 setRequestsInfo(response.data);
-                //updateTotal(response.data)
             })
             .catch(error => {
                 console.log(error);
                 toast.error('Ocurrió un error inesperado. Intenta de nuevo');
             })
     }
-    function getExpendituresInfo(day) {
-        axios.get(urlDailyExpendituresInfo + day, { withCredentials: true })
+    function getExpendituresInfo(month) {
+        axios.get(urlMonthlyExpendituresInfo + month, { withCredentials: true })
             .then(response => {
                 setExpendituresInfo(response.data);
                 const total = response.data.reduce((acc, item) => acc + parseInt(item.amount), 0);
@@ -104,43 +116,45 @@ export default function Daily() {
 
     function updateTotal(data) {
         const total = data.reduce((acc, item) => acc + parseInt(item.total), 0);
-        setTotalDay(prev => prev + total);
+        setTotalMonth(prev => prev + total);
     }
 
-    function getDayTotalInfo(e) {
-        setTotalDay(0);
+    function getMonthTotalInfo(e) {
+        setTotalMonth(0);
 
-        getClubInfo(e.day);
-        getMonthlyInfo(e.day);
-        getAnnualInfo(e.day);
-        getInscriptionInfo(e.day);
-        getRequestsInfo(e.day);
-        getExpendituresInfo(e.day);
+        getClubInfo(e.month);
+        getMonthlyInfo(e.month);
+        getAnnualInfo(e.month);
+        getInscriptionInfo(e.month);
+        getRequestsInfo(e.month);
+        getExpendituresInfo(e.month);
+
+        getInfo(e.month);
     }
 
     return (
         <div className="cuenta-main">
 
-            <h1>Consulta de caja diaria:</h1>
-            <form onSubmit={handleSubmit(getDayTotalInfo)} className="checkout-form">
-                <input type="date" id="day" name="day" defaultValue={today} {...register("day", { required: true })} />
+            <h1>Consulta de caja mensual:</h1>
+            <form onSubmit={handleSubmit(getMonthTotalInfo)} className="checkout-form">
+                <input type="month" id="month" name="month" defaultValue={today} {...register("month", { required: true })} />
                 <button type="submit" className="cuenta-button" >Consultar</button>
             </form>
 
-            {totalDay > 0 &&
+            {totalMonth > 0 &&
                 <table className="table_balance">
                     <thead>
                         <tr>
-                            <th>Total cuotas y matrículas</th>
+                            <th>Total cuotas y Matrículas</th>
                             <th>Egresos</th>
-                            <th>Balance del día</th>
+                            <th>Balance del Mes</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr >
-                            <th>{totalDay}</th>
+                            <th>{totalMonth}</th>
                             <th>{totalExpenditures}</th>
-                            <th>{totalDay - totalExpenditures}</th>
+                            <th>{totalMonth - totalExpenditures}</th>
                         </tr>
                     </tbody>
                 </table>}
@@ -173,7 +187,7 @@ export default function Daily() {
                     <table>
                         <thead>
                             <tr>
-                                <th>Registros</th>
+                                <th>Fecha</th>
                                 <th>Total</th>
                                 <th>Balance</th>
                             </tr>
@@ -183,7 +197,7 @@ export default function Daily() {
                             {
                                 monthlyInfo.map((reg) => (
                                     <tr key={reg.registros}>
-                                        <th>{reg.registros}</th>
+                                        <th>{new Date(reg.pay_date).toLocaleDateString('en-GB')}</th>
                                         <th>{reg.total}</th>
                                         <th></th>
                                     </tr>
@@ -205,7 +219,7 @@ export default function Daily() {
                     <table>
                         <thead>
                             <tr>
-                                <th>Registros</th>
+                                <th>Fecha</th>
                                 <th>Total</th>
                                 <th>Balance</th>
                             </tr>
@@ -215,7 +229,7 @@ export default function Daily() {
                             {
                                 annualInfo.map((reg) => (
                                     <tr key={reg.registros}>
-                                        <th>{reg.registros}</th>
+                                        <th>{new Date(reg.pay_date).toLocaleDateString('en-GB')}</th>
                                         <th>{reg.total}</th>
                                         <th></th>
                                     </tr>
@@ -236,7 +250,7 @@ export default function Daily() {
                     <table>
                         <thead>
                             <tr>
-                                <th>Registros</th>
+                                <th>Fecha</th>
                                 <th>Total</th>
                                 <th>Balance</th>
                             </tr>
@@ -246,7 +260,7 @@ export default function Daily() {
                             {
                                 inscriptionInfo.map((insc) => (
                                     <tr key={insc.registros}>
-                                        <th>{insc.registros}</th>
+                                        <th>{new Date(insc.pay_date).toLocaleDateString('en-GB')}</th>
                                         <th>{insc.total}</th>
                                         <th></th>
                                     </tr>
@@ -267,7 +281,7 @@ export default function Daily() {
                     <table>
                         <thead>
                             <tr>
-                                <th>Registros</th>
+                                <th>Fecha</th>
                                 <th>Total</th>
                                 <th>Balance</th>
                             </tr>
@@ -277,7 +291,7 @@ export default function Daily() {
                             {
                                 requestsInfo.map((merch) => (
                                     <tr key={merch.registros}>
-                                        <th>{merch.registros}</th>
+                                        <th>{new Date(merch.pay_date).toLocaleDateString('en-GB')}</th>
                                         <th>{merch.total}</th>
                                         <th></th>
                                     </tr>
@@ -298,6 +312,7 @@ export default function Daily() {
                     <table>
                         <thead>
                             <tr>
+                                <th>Fecha</th>
                                 <th>Descripción</th>
                                 <th>Monto</th>
                                 <th>Balance</th>
@@ -308,6 +323,7 @@ export default function Daily() {
                             {
                                 expendituresInfo.map((exp) => (
                                     <tr key={exp.id_exp}>
+                                        <th>{new Date(exp.pay_date).toLocaleDateString('en-GB')}</th>
                                         <th>{exp.descr}</th>
                                         <th>{exp.amount}</th>
                                         <th></th>
@@ -320,7 +336,45 @@ export default function Daily() {
                             <tr>
                                 <th></th>
                                 <th></th>
+                                <th></th>
                                 <th>${(expendituresInfo.reduce((acumulador, item) => acumulador + item.amount, 0))}</th>
+                            </tr>
+                        </tfoot>
+                    </table>}
+                    <h2>Grilla por días:</h2>
+                {info.length === 0 ? <p className="info-text-register">Sin datos</p> :
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Ingresó</th>
+                                <th>Egresó</th>
+                                <th>Balance</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            {
+                                info.map((grid) => (
+                                    <tr key={grid.id}>
+                                        <th>{new Date(grid.day).toLocaleDateString('en-GB')}</th>
+                                        <th>{grid.totalIn}</th>
+                                        <th>{grid.totalOut}</th>
+                                        <th>{grid.total}</th>
+                                        <th></th>
+                                    </tr>
+                                ))
+                            }
+
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th>${(info.reduce((acumulador, item) => acumulador + item.total, 0))}</th>
                             </tr>
                         </tfoot>
                     </table>}

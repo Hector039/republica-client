@@ -31,14 +31,10 @@ export default function Footer() {
                         </div>
                     </div>
                     <div className="footer-networks">
-
-                        <Link to={"https://www.facebook.com/"} target="_blank" rel="noreferrer" className="network-icon">
-                            <img src={FacebookIcon} alt="Facebook Icono" />
-                        </Link>
-                        <Link to={"https://www.instagram.com/"} target="_blank" rel="noreferrer" className="network-icon">
+                        <Link to={"https://www.instagram.com/gym_republicadeloeste/"} target="_blank" rel="noreferrer" className="network-icon">
                             <img src={InstagramIcon} alt="Instagram Icono" />
                         </Link>
-                        <Link to={"https://web.whatsapp.com/"} target="_blank" rel="noreferrer" className="network-icon">
+                        <Link to={"https://wa.me/5493425462491"} target="_blank" rel="noreferrer" className="network-icon">
                             <img src={WhatsappIcon} alt="Whatsapp Icono" />
                         </Link>
 

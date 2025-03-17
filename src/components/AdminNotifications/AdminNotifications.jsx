@@ -11,11 +11,13 @@ const urlMerchNewRequests = "merchrequests/newrequests"
 const urlMerchRequests = "merchrequests/"
 const urlMarkPaidMerchRequests = "merchrequests/updatepaymentstatus/"
 const urlPartialPayMerchRequest = "merchrequests/addmerchpayment/"
+const urlPartialPayInscription = "inscriptions/addinscpayment/"
 
 export default function AdminNotifications() {
     const [inscrptionsNewReq, setinscrptionsNewReq] = useState([]);
     const [merchNewReq, setmerchNewReq] = useState([]);
     const [amounts, setAmounts] = useState({});
+    const [inscAmounts, setInscAmounts] = useState({});
 
     function fetchNewInscr() {
         axios.get(urlInscriptionsNewRequests, { withCredentials: true })
@@ -55,7 +57,7 @@ export default function AdminNotifications() {
                 console.log(error)
             })
     }
-
+/* 
     function markPaidInscription(iid) {
         const payDate = date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate())
         axios.put(urlInscriptions, { iid: iid, payDate: payDate }, { withCredentials: true })
@@ -68,6 +70,29 @@ export default function AdminNotifications() {
                 console.log(error)
             })
     }
+ */
+    function payPartialInscription(iid) {
+        const payDate = date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate())
+        const amount = inscAmounts[iid] || "";
+
+        if (!amount) {
+            toast.error("Por favor, ingresa un monto.");
+            return;
+        }
+
+        axios.post(urlPartialPayInscription, { iid: iid, payDate: payDate, amount: amount }, { withCredentials: true })
+            .then(response => {
+                toast.success('Se registró el pago.');
+                fetchNewInscr();
+                setInscAmounts(prev => ({ ...prev, [iid]: "" }));
+            })
+            .catch(error => {
+                if (error.response.data.code === 5) return toast.error(error.response.data.message);
+                toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+                console.log(error)
+            })
+    }
+
 
     function deleteMerchRequest(mid) {
         axios.delete(urlMerchRequests + mid, { withCredentials: true })
@@ -133,6 +158,7 @@ export default function AdminNotifications() {
                                 <th>Precio</th>
                                 <th>Fecha inscripción</th>
                                 <th>Pagado</th>
+                                <th>Saldo actual</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -140,6 +166,7 @@ export default function AdminNotifications() {
 
                             {
                                 inscrptionsNewReq.map((inscription) => (
+                                    
                                     <tr key={inscription.id_inscription}>
                                         <th>{inscription.first_name}</th>
                                         <th>{inscription.last_name}</th>
@@ -149,7 +176,32 @@ export default function AdminNotifications() {
                                         <th>{inscription.inscription_price}</th>
                                         <th>{new Date(inscription.inscription_date).toLocaleDateString('en-GB')}</th>
                                         <th>{inscription.pay_date ? "PAGÓ" : "PENDIENTE"}</th>
-                                        <th>{!inscription.pay_date && <button className="edit-event-button" onClick={() => { markPaidInscription(inscription.id_inscription) }}>Registrar pago</button>}
+                                        <th>{inscription.pay_date ? "---" : inscription.total_amount}</th>
+                                        <th className="edit-event-buttons-container">
+                                        {!inscription.pay_date && (
+                                                <>
+                                                <div className="merch-input-container">
+                                                    <input
+                                                        className="merch-input"
+                                                        type="text"
+                                                        name="amount"
+                                                        placeholder="Monto *"
+                                                        inputMode="numeric"
+                                                        pattern="\d*"
+                                                        title="Solo números."
+                                                        value={inscAmounts[inscription.id_inscription] || ""}
+                                                        onChange={(e) =>
+                                                            setInscAmounts(prev => ({
+                                                                ...prev,
+                                                                [inscription.id_inscription]: e.target.value
+                                                            }))
+                                                        }
+                                                    />
+                                                    <button type="button" className="merch-button" onClick={() => payPartialInscription(inscription.id_inscription)} > Registrar </button>
+                                                </div>
+                                            {/* <button type="button" className="merch-button" onClick={() => markPaidInscription(inscription.id_inscription)} > Saldar </button> */}
+                                            </>
+                                            )}
                                             <button className="delete-event-button" onClick={() => { deleteInscription(inscription.id_inscription) }}>Borrar</button></th>
                                     </tr>
                                 ))

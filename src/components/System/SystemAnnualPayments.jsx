@@ -1,3 +1,4 @@
+import { NavLink } from "react-router-dom";
 import axios from "../../config/axiosConfig";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
@@ -5,12 +6,11 @@ import { toast } from 'react-toastify';
 
 const date = new Date();
 
-const urlUsers = "users/monthlywithunpaid"
-const urlAddMonthPayment = "monthlypayments/"
+const urlUsers = "users/annualwithunpaid"
+const urlAddAnnualPayment = "annualpayments/"
+const urlNewExpenditure = "utils/expenditures/"
 
-const urlAddLinkedMonthPayment = "monthlypayments/linkedpayment/"
-
-export default function SystemPayments() {
+export default function SystemAnnualPayments() {
 
     const payDate = date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate()).padStart(2, "0");
     const today = date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0");
@@ -37,47 +37,44 @@ export default function SystemPayments() {
             })
     }
 
-    function addPayment(e, uid, buttonType) {
+    function addPayment(e, uid) {
         const dateArray = e.split("-")
         const amount = amounts[uid] || "";
-        
-        if (buttonType === "month") {
-            if (!amount) {
-                toast.error("Por favor, ingresa un monto.");
-                return;
-            }
-            axios.post(urlAddMonthPayment, { uid: uid, month: dateArray[1], year: dateArray[0], payDate: payDate, amount: amount })
-                .then(response => {
-                    if (response.data !== "") return toast.success(response.data);
-                    toast.success('Se registró el pago.');
-                    setAmounts(prev => ({ ...prev, [uid]: "" }));
-                })
-                .catch(error => {
-                    if (error.response.data.code === 5) return toast.error(error.response.data.message);
-                    console.log(error);
-                    toast.error('Ocurrió un error inesperado. Intenta de nuevo');
-                })
-        } else if (buttonType === "linked") {
-            axios.post(urlAddLinkedMonthPayment, { uid: uid, month: dateArray[1], year: dateArray[0], payDate: payDate, isLinked: 1 })
-                .then(response => {
-                    toast.success('Se registró el pago por vínculo.');
-                    setAmounts(prev => ({ ...prev, [uid]: "" }));
-                })
-                .catch(error => {
-                    if (error.response.data.code === 5) return toast.error(error.response.data.message);
-                    console.log(error);
-                    toast.error('Ocurrió un error inesperado. Intenta de nuevo');
-                })
+
+        if (!amount) {
+            toast.error("Por favor, ingresa un monto.");
+            return;
         }
 
-    }
+        axios.post(urlAddAnnualPayment, { uid: uid, year: dateArray[0], payDate: payDate, amount: amount }, { withCredentials: true })
+            .then(response => {
+                if (response.data !== "") return toast.success(response.data);
+                toast.success('Se registró el pago.');
+                setAmounts(prev => ({ ...prev, [uid]: "" }));
+            })
+            .catch(error => {
+                if (error.response.data.code === 5) return toast.error(error.response.data.message);
+                console.log(error);
+                toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+            })
+    };
 
     const handleSubmit2 = (e, uid) => {
         e.preventDefault();
-        const buttonType = e.nativeEvent.submitter.name;
         const selectedDate = userDates[uid] || today;
-        addPayment(selectedDate, uid, buttonType);
+        addPayment(selectedDate, uid);
     };
+
+    function newExpenditure(e) {
+        axios.post(urlNewExpenditure, { descr: e.descr, amount: e.amount, payDate: payDate }, { withCredentials: true })
+            .then(response => {
+                toast.success('Se registró el egreso.');
+            })
+            .catch(error => {
+                console.log(error);
+                toast.error('Ocurrió un error inesperado');
+            })
+    }
 
     const handleChange2 = (event, uid) => {
         setUserDates(prevState => ({
@@ -88,7 +85,7 @@ export default function SystemPayments() {
 
     return (
         <div className="carrito">
-            <h1>Gestión de cuotas:</h1>
+            <h1>Gestión de matrículas:</h1>
 
             <form onSubmit={handleSubmit(getUsers)} className="checkout-form">
                 <label>Buscar usuario por:
@@ -117,7 +114,6 @@ export default function SystemPayments() {
                                 <th>DNI</th>
                                 <th>Registrado</th>
                                 <th>Estado</th>
-                                <th>Tarifa</th>
                                 <th>Última impaga</th>
                                 <th>Monto</th>
                                 <th>Fecha a registrar</th>
@@ -133,9 +129,8 @@ export default function SystemPayments() {
                                         <th>{user.dni}</th>
                                         <th>{new Date(user.register_date).toLocaleDateString('en-GB')}</th>
                                         <th>{user.user_status ? "ACTIVO" : "INACTIVO"}</th>
-                                        <th>{user.fee_descr}</th>
-                                        <th>{user.last_unpaid_month ? user.last_unpaid_month : "---"}/{user.last_unpaid_month_year ? user.last_unpaid_month_year : "---"}</th>
-                                        <th>{user.last_unpaid_month_amount ? user.last_unpaid_month_amount : "---"}</th>
+                                        <th>{user.last_unpaid_year ? user.last_unpaid_year : "---"}</th>
+                                        <th>{user.last_unpaid_amount ? user.last_unpaid_amount : "---"}</th>
                                         <th><form onSubmit={e => handleSubmit2(e, user.id_user)} >
                                             <input
                                                 type="month"
@@ -161,10 +156,8 @@ export default function SystemPayments() {
                                                     }))
                                                 }
                                             />
-                                            <div className="register-payments-buttons-container">
-                                                <button className="payments-buttons" type="submit" name="month" >Registrar</button>
-                                                <button className="payments-buttons" type="submit" name="linked" >Registrar por vínculo</button>
-                                            </div>
+                                            <button className="payments-buttons" type="submit" name="year" >Registrar Matricula</button>
+
                                         </form>
                                         </th>
                                     </tr>
@@ -175,7 +168,6 @@ export default function SystemPayments() {
                     </table>
                 </div>
             }
-
         </div>
     )
 }
