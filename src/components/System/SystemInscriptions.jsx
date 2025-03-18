@@ -40,22 +40,22 @@ export default function SystemInscriptions() {
         axiosData();
     }, [])
 
-
-    function deleteInscription(iid) {
-        axios.delete(urlInscriptions + iid, { withCredentials: true })
-            .then(response => {
-                toast.success('Se eliminó la inscripción correctamente.');
-                fetchInscriptions();
-            })
-            .catch(error => {
-                toast.error('Ocurrió un error inesperado. Intenta de nuevo');
-                console.log(error)
-            })
-    }
-
-    function payPartialInscription(iid) {
+    /* 
+        function deleteInscription(iid) {
+            axios.delete(urlInscriptions + iid, { withCredentials: true })
+                .then(response => {
+                    toast.success('Se eliminó la inscripción correctamente.');
+                    fetchInscriptions();
+                })
+                .catch(error => {
+                    toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+                    console.log(error)
+                })
+        }
+     */
+    function payPartialInscription(iid, inscriptionPrice) {
         const payDate = date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate())
-        const amount = amounts[iid] || "";
+        const amount = amounts[iid] || inscriptionPrice;
 
         if (!amount) {
             toast.error("Por favor, ingresa un monto.");
@@ -74,7 +74,7 @@ export default function SystemInscriptions() {
             })
     }
 
-    
+
     function handleDownloadExcel() {
         const header = ["ID usuario", "Nombre", "Apellido", "Email", "Teléfono", "evento", "Fecha", "Precio", "Fecha Inscrp", "Fecha Pago", "ID Insc"];
         downloadExcel({
@@ -89,10 +89,10 @@ export default function SystemInscriptions() {
 
     return (
         <div className="system_incs_container">
-            <h1>Historial de solicitudes de inscripción:</h1>
+            <h1>Gestión solicitudes de inscripción:</h1>
             {inscriptionsReq.length != 0 ?
                 <div className="table_container">
-                <button className="boton-quitar-carrito" onClick={handleDownloadExcel}>Exportar</button>
+                    <button className="boton-quitar-carrito" onClick={handleDownloadExcel}>Exportar</button>
                     <table>
                         <thead>
                             <tr>
@@ -104,7 +104,7 @@ export default function SystemInscriptions() {
                                 <th>Precio inscripción</th>
                                 <th>Fecha inscripción</th>
                                 <th>Pagado</th>
-                                <th>Saldo actual</th>
+                                <th>Entregó</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -118,13 +118,12 @@ export default function SystemInscriptions() {
                                         <th>{inscription.tel_contact}</th>
                                         <th>{inscription.event_name}</th>
                                         <th>{new Date(inscription.event_date).toLocaleDateString('en-GB')}</th>
-                                        <th>{inscription.inscription_price}</th>
+                                        <th>${inscription.inscription_price}</th>
                                         <th>{new Date(inscription.inscription_date).toLocaleDateString('en-GB')}</th>
                                         <th>{inscription.pay_date ? "PAGÓ" : "PENDIENTE"}</th>
                                         <th>{inscription.pay_date ? "---" : inscription.total_amount}</th>
-                                        <th className="edit-event-buttons-container">
-                                        {!inscription.pay_date && (
-                                                <>
+                                        {!inscription.pay_date ? (
+                                            <th className="edit-event-buttons-container">
                                                 <div className="merch-input-container">
                                                     <input
                                                         className="merch-input"
@@ -134,7 +133,7 @@ export default function SystemInscriptions() {
                                                         inputMode="numeric"
                                                         pattern="\d*"
                                                         title="Solo números."
-                                                        value={amounts[inscription.id_inscription] || ""}
+                                                        value={amounts[inscription.id_inscription] || inscription.inscription_price}
                                                         onChange={(e) =>
                                                             setAmounts(prev => ({
                                                                 ...prev,
@@ -142,12 +141,11 @@ export default function SystemInscriptions() {
                                                             }))
                                                         }
                                                     />
-                                                    <button type="button" className="merch-button" onClick={() => payPartialInscription(inscription.id_inscription)} > Registrar </button>
+                                                    <button type="button" className="merch-button" onClick={() => payPartialInscription(inscription.id_inscription, inscription.inscription_price)} > Registrar </button>
                                                 </div>
-                                            
-                                            </>
-                                            )}
-                                            <button className="delete-event-button" onClick={() => { deleteInscription(inscription.id_inscription) }}>Borrar</button></th>
+                                                {/* <button className="delete-event-button" onClick={() => { deleteInscription(inscription.id_inscription) }}>Borrar</button> */}
+                                            </th>
+                                        ) : <th></th>}
                                     </tr>
                                 ))
                             }

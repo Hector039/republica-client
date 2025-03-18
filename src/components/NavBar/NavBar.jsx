@@ -30,8 +30,7 @@ export default function NavBar() {
                     {user && user.is_admin === 1 ?
                         <><NavLink to={"/"} className="navbar-item" style={({ isActive }) => { return { fontWeight: isActive ? "bold" : "" } }}>Inicio</NavLink>
                             <NavLink to={"/administrationusers"} className="navbar-item-sistema" style={({ isActive }) => { return { fontWeight: isActive ? "bold" : "" } }}>Usuarios</NavLink>
-                            <NavLink to={"/administrationpayments"} className="navbar-item-sistema" style={({ isActive }) => { return { fontWeight: isActive ? "bold" : "" } }}>Cuotas</NavLink>
-                            <NavLink to={"/adminannualpayments"} className="navbar-item-sistema" style={({ isActive }) => { return { fontWeight: isActive ? "bold" : "" } }}>Matriculas</NavLink>
+                            <NavLink to={"/administrationpayments"} className="navbar-item-sistema" style={({ isActive }) => { return { fontWeight: isActive ? "bold" : "" } }}>Pagos</NavLink>
                             <NavLink to={"/administrationevents"} className="navbar-item-sistema" style={({ isActive }) => { return { fontWeight: isActive ? "bold" : "" } }}>Eventos</NavLink>
                             <NavLink to={"/administrationinscriptions"} className="navbar-item-sistema" style={({ isActive }) => { return { fontWeight: isActive ? "bold" : "" } }}>Inscripciones</NavLink>
                             <NavLink to={"/administrationmerch"} className="navbar-item-sistema" style={({ isActive }) => { return { fontWeight: isActive ? "bold" : "" } }}>Encargues</NavLink>

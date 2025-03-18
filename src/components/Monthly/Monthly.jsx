@@ -342,7 +342,7 @@ export default function Monthly() {
                         </tfoot>
                     </table>}
                     <h2>Grilla por días:</h2>
-                {info.length === 0 ? <p className="info-text-register">Sin datos</p> :
+                    {info.length === 0 ? <p className="info-text-register">Sin datos</p> :
                     <table>
                         <thead>
                             <tr>

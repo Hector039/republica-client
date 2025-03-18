@@ -34,17 +34,18 @@ body {
 }
 
 h1,
-h2, h4 {
+h2,
+h4 {
   color: rgb(83, 39, 178);
   text-align: center;
 }
 
-h3{
+h3 {
   margin-inline: 300px;
   text-align: center;
 }
 
-h5{
+h5 {
   font-size: 1.1em;
   font-weight: 600;
   margin-right: auto;
@@ -103,7 +104,7 @@ input {
   gap: 40px;
 }
 
-.update_user_container{
+.update_user_container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -578,11 +579,11 @@ input {
   width: 35px;
 }
 
-.iconos_footer{
+.iconos_footer {
   padding-top: 5px;
 }
 
-.contacto{
+.contacto {
   display: flex;
   gap: 15px;
 }
@@ -627,7 +628,7 @@ input {
   color: rgb(83, 39, 178);
 }
 
-.table_container{
+.table_container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -695,7 +696,8 @@ form {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
 }
-.checkout-form{
+
+.checkout-form {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -768,13 +770,13 @@ select {
   align-items: center;
 }
 
-.system_incs_container{
+.system_incs_container {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.is_open{
+.is_open {
   padding: 10px;
   background: rgb(81, 255, 0);
   color: rgb(0, 0, 0);
@@ -787,7 +789,7 @@ select {
   margin-bottom: 40px;
 }
 
-.is_closed{
+.is_closed {
   padding: 10px;
   background: rgb(255, 94, 0);
   color: rgb(0, 0, 0);
@@ -800,9 +802,19 @@ select {
   margin-bottom: 40px;
 }
 
+.unpaid_container {
+  display: flex;
+  flex-direction: column;
+}
+
+.payment_buttons_container {
+  display: flex;
+  gap: 10px;
+}
+
 
 @media (max-width: 768px) {
-  
+
   .navbar-menu {
     flex-direction: column;
     align-items: center;
@@ -810,7 +822,7 @@ select {
     margin-top: 10px;
   }
 
-  h3{
+  h3 {
     margin-inline: 50px;
   }
 
@@ -835,6 +847,7 @@ select {
     justify-content: center;
     gap: 100px;
   }
+
   .navbar {
     flex-direction: row;
     justify-content: space-between;

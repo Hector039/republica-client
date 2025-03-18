@@ -173,7 +173,6 @@ export default function Daily() {
                     <table>
                         <thead>
                             <tr>
-                                <th>Registros</th>
                                 <th>Total</th>
                                 <th>Balance</th>
                             </tr>
@@ -183,7 +182,6 @@ export default function Daily() {
                             {
                                 monthlyInfo.map((reg) => (
                                     <tr key={reg.registros}>
-                                        <th>{reg.registros}</th>
                                         <th>{reg.total}</th>
                                         <th></th>
                                     </tr>
@@ -193,7 +191,6 @@ export default function Daily() {
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th></th>
                                 <th></th>
                                 <th>${(monthlyInfo.reduce((acumulador, item) => acumulador + parseInt(item.total), 0))}</th>
                             </tr>
@@ -205,7 +202,6 @@ export default function Daily() {
                     <table>
                         <thead>
                             <tr>
-                                <th>Registros</th>
                                 <th>Total</th>
                                 <th>Balance</th>
                             </tr>
@@ -215,7 +211,6 @@ export default function Daily() {
                             {
                                 annualInfo.map((reg) => (
                                     <tr key={reg.registros}>
-                                        <th>{reg.registros}</th>
                                         <th>{reg.total}</th>
                                         <th></th>
                                     </tr>
@@ -226,7 +221,6 @@ export default function Daily() {
                         <tfoot>
                             <tr>
                                 <th></th>
-                                <th></th>
                                 <th>${(annualInfo.reduce((acumulador, item) => acumulador + parseInt(item.total), 0))}</th>
                             </tr>
                         </tfoot>
@@ -236,7 +230,6 @@ export default function Daily() {
                     <table>
                         <thead>
                             <tr>
-                                <th>Registros</th>
                                 <th>Total</th>
                                 <th>Balance</th>
                             </tr>
@@ -246,7 +239,6 @@ export default function Daily() {
                             {
                                 inscriptionInfo.map((insc) => (
                                     <tr key={insc.registros}>
-                                        <th>{insc.registros}</th>
                                         <th>{insc.total}</th>
                                         <th></th>
                                     </tr>
@@ -257,7 +249,6 @@ export default function Daily() {
                         <tfoot>
                             <tr>
                                 <th></th>
-                                <th></th>
                                 <th>${(inscriptionInfo.reduce((acumulador, item) => acumulador + item.total, 0))}</th>
                             </tr>
                         </tfoot>
@@ -267,7 +258,6 @@ export default function Daily() {
                     <table>
                         <thead>
                             <tr>
-                                <th>Registros</th>
                                 <th>Total</th>
                                 <th>Balance</th>
                             </tr>
@@ -277,7 +267,6 @@ export default function Daily() {
                             {
                                 requestsInfo.map((merch) => (
                                     <tr key={merch.registros}>
-                                        <th>{merch.registros}</th>
                                         <th>{merch.total}</th>
                                         <th></th>
                                     </tr>
@@ -287,7 +276,6 @@ export default function Daily() {
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th></th>
                                 <th></th>
                                 <th>${(requestsInfo.reduce((acumulador, item) => acumulador + item.total, 0))}</th>
                             </tr>

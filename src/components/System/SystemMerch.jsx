@@ -134,8 +134,8 @@ export default function SystemMerch() {
 
     return (
         <div className="system_incs_container">
-            {featurePosition ? <button className="is_open" onClick={() => { openCloseFeatures(1, featurePosition) }}>Solicitudes habilitadas</button> : 
-            <button className="is_closed" onClick={() => { openCloseFeatures(1, featurePosition) }}>Solicitudes deshabilitadas</button>}
+            {featurePosition ? <button className="is_open" onClick={() => { openCloseFeatures(1, featurePosition) }}>Solicitudes habilitadas</button> :
+                <button className="is_closed" onClick={() => { openCloseFeatures(1, featurePosition) }}>Solicitudes deshabilitadas</button>}
 
             <h1>Historial de solicitudes de encargues:</h1>
             {merchRequests.length != 0 ?
@@ -151,7 +151,7 @@ export default function SystemMerch() {
                                 <th>Fecha Solicitud</th>
                                 <th>Descripción</th>
                                 <th>Estado</th>
-                                <th>Saldo Actual</th>
+                                <th>Entregó</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -167,9 +167,8 @@ export default function SystemMerch() {
                                         <th>{merchReq.req_description}</th>
                                         <th>{merchReq.pay_date ? "PAGÓ" : "PENDIENTE"}</th>
                                         <th>{merchReq.pay_date ? "---" : merchReq.amount}</th>
-                                        <th className="edit-event-buttons-container">
-                                            {!merchReq.pay_date && (
-                                                <>
+                                        {!merchReq.pay_date ? (
+                                            <th className="edit-event-buttons-container">
                                                 <div className="merch-input-container">
                                                     <input
                                                         className="merch-input"
@@ -189,10 +188,10 @@ export default function SystemMerch() {
                                                     />
                                                     <button type="button" className="merch-button" onClick={() => payPartialMerchRequest(merchReq.id_request)} > Registrar parcial </button>
                                                 </div>
-                                            <button type="button" className="merch-button" onClick={() => markPaidMerchRequest(merchReq.id_request)} > Saldar </button>
-                                            </>
-                                            )}
-                                            <button className="delete-event-button" onClick={() => { deleteMerchRequest(merchReq.id_request) }}>Borrar</button></th>
+                                                <button type="button" className="merch-button" onClick={() => markPaidMerchRequest(merchReq.id_request)} > Saldar </button>
+                                                {/* <button className="delete-event-button" onClick={() => { deleteMerchRequest(merchReq.id_request) }}>Borrar</button> */}
+                                            </th>) : <th></th>}
+
                                     </tr>
                                 ))
                             }

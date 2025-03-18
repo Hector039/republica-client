@@ -1,12 +1,11 @@
 import { useForm } from "react-hook-form";
-import { useEffect/* , useState */ } from "react";
+import { useEffect } from "react";
 import { useUser } from "../context/dataContext";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import axios from "../../config/axiosConfig";
 import Swal from "sweetalert2";
 import withReactContent from 'sweetalert2-react-content'
 import { toast } from 'react-toastify';
-//import { QRCodeSVG } from "qrcode.react";
 
 const MySwal = withReactContent(Swal)
 
@@ -19,12 +18,10 @@ const urlAdminNotifications = "utils/notifications"
 const urlNotifyAnnualDebtor = "annualpayments/notifydebtor/"
 const urlNotifyMonthlyDebtor = "monthlypayments/notifydebtor/"
 const urlNewExpenditure = "utils/expenditures/"
-//const urlGetQr = "utils/getqr"
 
 export default function Users() {
     const navigate = useNavigate();
     const { user, setUser } = useUser();
-    //const [qr, setQr] = useState(null)
     const payDate = date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate()).padStart(2, "0");
     const queryDte = date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0");
 
@@ -111,7 +108,7 @@ export default function Users() {
                     return navigate("/");
                 }
 
-                if (date.getDate() > 19) {
+                if (date.getDate() > 16) {
                     axios.get(urlNotifyMonthlyDebtor + idUser + "/" + queryDte, { withCredentials: true })
                         .then(async response => {
                             if (response.data != "") {
@@ -199,20 +196,6 @@ export default function Users() {
             })
     }
 
-    /* 
-        const getQr = () => {
-            console.log("enviando");
-     
-            axios.get(urlGetQr, { withCredentials: true })
-                .then(response => {
-                    setQr(response.data.qrCode);
-                })
-                .catch(error => {
-                    console.log(error);
-                    toast.error('Ocurrió un error inesperado. Intenta de nuevo');
-                })
-        }
-     */
     return (
         <section className="cuenta-info">
             {

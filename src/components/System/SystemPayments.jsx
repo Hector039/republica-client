@@ -5,9 +5,13 @@ import { toast } from 'react-toastify';
 
 const date = new Date();
 
-const urlUsers = "users/monthlywithunpaid"
+const urlUsersMonthlyWithUnpaid = "users/monthlywithunpaid"
+const urlUsers = "users/"
 const urlAddMonthPayment = "monthlypayments/"
 
+const urlUsersAnnualWithUnpaid = "users/annualwithunpaid"
+const urlAddAnnualPayment = "annualpayments/"
+const urlNewExpenditure = "utils/expenditures/"
 const urlAddLinkedMonthPayment = "monthlypayments/linkedpayment/"
 
 export default function SystemPayments() {
@@ -17,7 +21,8 @@ export default function SystemPayments() {
 
     const [users, setUsers] = useState([])
     const [userDates, setUserDates] = useState({});
-    const [amounts, setAmounts] = useState({});
+    const [monthAmounts, setMonthAmounts] = useState({});
+    const [annualAmounts, setAnnualAmounts] = useState({});
 
     const {
         register,
@@ -29,6 +34,7 @@ export default function SystemPayments() {
     function getUsers(e) {
         axios.post(urlUsers, { search: e.search, value: e.value }, { withCredentials: true })
             .then(response => {
+
                 setUsers(response.data);
             })
             .catch(error => {
@@ -37,11 +43,11 @@ export default function SystemPayments() {
             })
     }
 
-    function addPayment(e, uid, buttonType) {
+    function addPayment(e, uid, buttonType, feeMonth, feeAnnual) {
         const dateArray = e.split("-")
-        const amount = amounts[uid] || "";
-        
+
         if (buttonType === "month") {
+            const amount = monthAmounts[uid] || feeMonth;
             if (!amount) {
                 toast.error("Por favor, ingresa un monto.");
                 return;
@@ -50,7 +56,7 @@ export default function SystemPayments() {
                 .then(response => {
                     if (response.data !== "") return toast.success(response.data);
                     toast.success('Se registró el pago.');
-                    setAmounts(prev => ({ ...prev, [uid]: "" }));
+                    setMonthAmounts(prev => ({ ...prev, [uid]: "" }));
                 })
                 .catch(error => {
                     if (error.response.data.code === 5) return toast.error(error.response.data.message);
@@ -61,7 +67,24 @@ export default function SystemPayments() {
             axios.post(urlAddLinkedMonthPayment, { uid: uid, month: dateArray[1], year: dateArray[0], payDate: payDate, isLinked: 1 })
                 .then(response => {
                     toast.success('Se registró el pago por vínculo.');
-                    setAmounts(prev => ({ ...prev, [uid]: "" }));
+                    setMonthAmounts(prev => ({ ...prev, [uid]: "" }));
+                })
+                .catch(error => {
+                    if (error.response.data.code === 5) return toast.error(error.response.data.message);
+                    console.log(error);
+                    toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+                })
+        } else if (buttonType === "year") {
+            const amount = annualAmounts[uid] || feeAnnual;
+            if (!amount) {
+                toast.error("Por favor, ingresa un monto.");
+                return;
+            }
+            axios.post(urlAddAnnualPayment, { uid: uid, year: dateArray[0], payDate: payDate, amount: amount })
+                .then(response => {
+                    if (response.data !== "") return toast.success(response.data);
+                    toast.success('Se registró el pago.');
+                    setAnnualAmounts(prev => ({ ...prev, [uid]: "" }));
                 })
                 .catch(error => {
                     if (error.response.data.code === 5) return toast.error(error.response.data.message);
@@ -72,11 +95,11 @@ export default function SystemPayments() {
 
     }
 
-    const handleSubmit2 = (e, uid) => {
+    const handleSubmit2 = (e, uid, feeMonth, feeAnnual) => {
         e.preventDefault();
         const buttonType = e.nativeEvent.submitter.name;
         const selectedDate = userDates[uid] || today;
-        addPayment(selectedDate, uid, buttonType);
+        addPayment(selectedDate, uid, buttonType, feeMonth, feeAnnual);
     };
 
     const handleChange2 = (event, uid) => {
@@ -88,7 +111,7 @@ export default function SystemPayments() {
 
     return (
         <div className="carrito">
-            <h1>Gestión de cuotas:</h1>
+            <h1>Gestión de pagos:</h1>
 
             <form onSubmit={handleSubmit(getUsers)} className="checkout-form">
                 <label>Buscar usuario por:
@@ -119,7 +142,7 @@ export default function SystemPayments() {
                                 <th>Estado</th>
                                 <th>Tarifa</th>
                                 <th>Última impaga</th>
-                                <th>Monto</th>
+                                <th>Entregó</th>
                                 <th>Fecha a registrar</th>
                             </tr>
                         </thead>
@@ -134,9 +157,16 @@ export default function SystemPayments() {
                                         <th>{new Date(user.register_date).toLocaleDateString('en-GB')}</th>
                                         <th>{user.user_status ? "ACTIVO" : "INACTIVO"}</th>
                                         <th>{user.fee_descr}</th>
-                                        <th>{user.last_unpaid_month ? user.last_unpaid_month : "---"}/{user.last_unpaid_month_year ? user.last_unpaid_month_year : "---"}</th>
-                                        <th>{user.last_unpaid_month_amount ? user.last_unpaid_month_amount : "---"}</th>
-                                        <th><form onSubmit={e => handleSubmit2(e, user.id_user)} >
+                                        <th><div className="unpaid_container">
+                                            <p>{user.last_unpaid_month ? user.last_unpaid_month : "---"}/{user.last_unpaid_month_year ? user.last_unpaid_month_year : "---"}</p>
+                                            <p>{user.last_unpaid_year ? user.last_unpaid_year : "---"}</p>
+                                        </div></th>
+                                        <th><div className="unpaid_container">
+                                            <p>{user.last_unpaid_month_amount ? user.last_unpaid_month_amount : "---"}</p>
+                                            <p>{user.last_unpaid_amount ? user.last_unpaid_amount : "---"}</p>
+                                        </div></th>
+                                        <th><form onSubmit={e => handleSubmit2(e, user.id_user, user.fee_month, user.fee_annual)} >
+
                                             <input
                                                 type="month"
                                                 id="month_paid"
@@ -145,26 +175,47 @@ export default function SystemPayments() {
                                                 onChange={(e) => handleChange2(e, user.id_user)}
                                                 required
                                             />
-                                            <input
-                                                className="merch-input"
-                                                type="text"
-                                                name="amount"
-                                                placeholder="Monto *"
-                                                inputMode="numeric"
-                                                pattern="\d*"
-                                                title="Solo números."
-                                                value={amounts[user.id_user] || ""}
-                                                onChange={(e) =>
-                                                    setAmounts(prev => ({
-                                                        ...prev,
-                                                        [user.id_user]: e.target.value
-                                                    }))
-                                                }
-                                            />
-                                            <div className="register-payments-buttons-container">
+                                            <div className="payment_buttons_container">
                                                 <button className="payments-buttons" type="submit" name="month" >Registrar</button>
+                                                <input
+                                                    className="merch-input"
+                                                    type="text"
+                                                    name="amount"
+                                                    placeholder="Monto *"
+                                                    inputMode="numeric"
+                                                    pattern="\d*"
+                                                    title="Solo números."
+                                                    value={monthAmounts[user.id_user] || user.fee_month}
+                                                    onChange={(e) =>
+                                                        setMonthAmounts(prev => ({
+                                                            ...prev,
+                                                            [user.id_user]: e.target.value
+                                                        }))
+                                                    }
+                                                />
                                                 <button className="payments-buttons" type="submit" name="linked" >Registrar por vínculo</button>
                                             </div>
+
+                                            <div className="payment_buttons_container">
+                                                <button className="payments-buttons" type="submit" name="year" >Registrar Matricula</button>
+                                                <input
+                                                    className="merch-input"
+                                                    type="text"
+                                                    name="amount"
+                                                    placeholder="Monto *"
+                                                    inputMode="numeric"
+                                                    pattern="\d*"
+                                                    title="Solo números."
+                                                    value={annualAmounts[user.id_user] || user.fee_annual}
+                                                    onChange={(e) =>
+                                                        setAnnualAmounts(prev => ({
+                                                            ...prev,
+                                                            [user.id_user]: e.target.value
+                                                        }))
+                                                    }
+                                                />
+                                            </div>
+
                                         </form>
                                         </th>
                                     </tr>

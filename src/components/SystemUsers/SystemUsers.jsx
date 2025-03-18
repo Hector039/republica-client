@@ -5,7 +5,7 @@ import { useState } from "react";
 import { downloadExcel } from "react-export-table-to-excel";
 import { toast } from 'react-toastify';
 
-const urlUsers = "users/"
+const urlUsers = "users/usersclean"
 const urlChangeStatus = "users/changeuserstatus"
 const urlChangeGroup = "users/changeusergroup"
 const urlChangeFee = "users/changeuserfee"

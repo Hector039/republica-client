@@ -15,6 +15,7 @@ const urlMerchRequests = "merchrequests/allusermerch/"
 const urlSendMerchRequests = "merchrequests/addmerchrequest/"
 //const urlDeleteMerchRequests = "merchrequests/"
 const urlGetFeaturesPositions = "utils/openclosefeatures"
+const urlUser = "users/"
 
 export default function MasInfo() {
     const [events, setEvents] = useState([])
@@ -22,7 +23,7 @@ export default function MasInfo() {
     const [merchRequests, setMerchRequests] = useState([])
     const [featureMerchPosition, setFeatureMerchPosition] = useState(0);
     const [featureEventPosition, setFeatureEventPosition] = useState(0);
-    const { user } = useUser();
+    const { user, setUser } = useUser();
 
     function fetchPositions() {
         axios.get(urlGetFeaturesPositions)
@@ -36,9 +37,8 @@ export default function MasInfo() {
             })
     }
 
-    function fecthMerch() {
-        if (user) {
-            axios.get(urlMerchRequests + user.id_user, { withCredentials: true })
+    function fecthMerch(uid) {
+            axios.get(urlMerchRequests + uid, { withCredentials: true })
                 .then(response => {
                     setMerchRequests(response.data);
                 })
@@ -46,12 +46,9 @@ export default function MasInfo() {
                     console.log(error);
                     toast.error('Ocurrió un error inesperado. Intenta de nuevo');
                 })
-        }
     }
-    function fetchInscr() {
-        if (user) {
-
-            axios.get(urlInscriptions + user.id_user, { withCredentials: true })
+    function fetchInscr(uid) {
+            axios.get(urlInscriptions + uid, { withCredentials: true })
                 .then(response => {
                     setUserInscriptions(response.data);
                 })
@@ -59,7 +56,6 @@ export default function MasInfo() {
                     console.log(error);
                     toast.error(error);
                 })
-        }
     }
 
     function fetchEvents() {
@@ -74,9 +70,18 @@ export default function MasInfo() {
     }
 
     useEffect(() => {
+        axios.get(urlUser, { withCredentials: true })
+            .then(response => {
+                setUser(response.data);
+                fetchInscr(response.data.id_user);
+                fecthMerch(response.data.id_user);
+            })
+            .catch(error => {
+                console.log(error);
+                toast.error('Ocurrió un error inesperado. Intenta de nuevo');
+            })
         fetchEvents();
-        fetchInscr();
-        fecthMerch();
+
         fetchPositions();
     }, [])
 
@@ -201,14 +206,14 @@ export default function MasInfo() {
 
             {merchRequests.length != 0 &&
                 <div className="table_container">
-                    
+
                     <table>
                         <thead>
                             <tr>
                                 <th>Fecha de la solicitud</th>
                                 <th>Descripción</th>
                                 <th>Estado</th>
-                                <th>Saldo</th>
+                                <th>Entregó</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -238,6 +243,7 @@ export default function MasInfo() {
                                 <th>Descripción</th>
                                 <th>Precio inscripción</th>
                                 <th>Estado</th>
+                                <th>Entregó</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -250,6 +256,7 @@ export default function MasInfo() {
                                         <th>{event.event_description}</th>
                                         <th>${event.inscription_price}</th>
                                         <th>{event.pay_date ? "PAGÓ" : "PENDIENTE"}</th>
+                                        <th>${event.pay_date ? "---" : event.amount}</th>
                                     </tr>
                                 ))
                             }
@@ -257,9 +264,9 @@ export default function MasInfo() {
                     </table></div>}
 
             <div className="products-container">
-                    <div className="table_container">
-                        <h2>Eventos, Inscripciones y Beneficios</h2>
-                {events.length != 0 && (user && featureEventPosition) ? 
+                <div className="table_container">
+                    <h2>Eventos, Inscripciones y Beneficios</h2>
+                    {events.length != 0 && (user && featureEventPosition) ?
                         <table>
                             <thead>
                                 <tr>
@@ -286,32 +293,32 @@ export default function MasInfo() {
                                     ))
                                 }
                             </tbody>
-                        </table> : 
+                        </table> :
                         <table>
-                        <thead>
-                            <tr>
-                                <th>Fecha de publicación</th>
-                                <th>Fecha del evento</th>
-                                <th>Nombre</th>
-                                <th>Descripción</th>
-                                <th>Precio inscripción</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                                    <tr >
-                                        <th>dd/mm/aaaa</th>
-                                        <th>dd/mm/aaaa</th>
-                                        <th>próximamente</th>
-                                        <th>xxxxxxxxxxxx</th>
-                                        <th>$xxxxxx</th>
-                                        <th><button className="boton-quitar-carrito" disabled>No disponible</button></th>
-                                    </tr>
-                        </tbody>
-                    </table>
+                            <thead>
+                                <tr>
+                                    <th>Fecha de publicación</th>
+                                    <th>Fecha del evento</th>
+                                    <th>Nombre</th>
+                                    <th>Descripción</th>
+                                    <th>Precio inscripción</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr >
+                                    <th>dd/mm/aaaa</th>
+                                    <th>dd/mm/aaaa</th>
+                                    <th>próximamente</th>
+                                    <th>xxxxxxxxxxxx</th>
+                                    <th>$xxxxxx</th>
+                                    <th><button className="boton-quitar-carrito" disabled>No disponible</button></th>
+                                </tr>
+                            </tbody>
+                        </table>
                     }
-                        </div>
-            <NavLink to={"/"} className="info-button">Volver</NavLink>
+                </div>
+                <NavLink to={"/"} className="info-button">Volver</NavLink>
             </div>
 
         </>

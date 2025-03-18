@@ -58,7 +58,7 @@ export default function SystemEvents() {
         fetchEvents();
         fetchPositions();
     }, []);
-
+/* 
     function deleteEvent(eid) {
         axios.delete(urlEvents + eid, { withCredentials: true })
             .then(response => {
@@ -70,7 +70,7 @@ export default function SystemEvents() {
                 console.log(error)
             })
     }
-
+ */
     const newEvent = (e) => {
         axios.post(urlEvents, {
             event_date: e.event_date,
@@ -140,7 +140,7 @@ export default function SystemEvents() {
                                                 <th>{event.event_name}</th>
                                                 <th>{event.event_description}</th>
                                                 <th>{event.inscription_price}</th>
-                                                <th className="edit-event-buttons-container"> <button className="delete-event-button" onClick={() => { deleteEvent(event.id_event) }}>Borrar</button>
+                                                <th className="edit-event-buttons-container"> {/* <button className="delete-event-button" onClick={() => { deleteEvent(event.id_event) }}>Borrar</button> */}
                                                     {<NavLink to={`/updateevent/${event.id_event}`} className="edit-event-button" >Editar</NavLink>}</th>
                                             </tr>
                                         ))
