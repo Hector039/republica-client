@@ -2,10 +2,10 @@ import axios from 'axios';
 
 const axiosInstance = axios.create({
     baseURL: "https://republica-server.onrender.com/api/",
-    proxy: {
+    /* proxy: {
         host: "localhost",
         port: 5173
-    }
+    } */
 });
 
 axiosInstance.interceptors.request.use(
